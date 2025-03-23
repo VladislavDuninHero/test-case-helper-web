@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import axios from 'axios';
 
 import { Routes } from '../../constants/Route';
 
@@ -8,6 +7,8 @@ import Input from '../ui/Input';
 import Button from '../ui/Button';
 import { Navigate } from 'react-router';
 import Notification from '../notification/Notification';
+import RequestService from '../../service/api/RequestService';
+import CookieService from '../../service/cookie/CookieHandlerService';
 
 const StyledForm = styled.form`
     display: flex;
@@ -31,23 +32,30 @@ const LoginForm = () => {
 
     const renderStatus = (loginStatus) => {
         if (loginStatus >= 300) {
-            return <Notification status={loginStatus}/>
+            return <Notification $status={loginStatus}/>
         }
     }
 
     const handleLogin = (event) => {
-        event.preventDefault()
+        event.preventDefault();
 
-        const res = axios
-            .post(Routes.LOGIN_ROUTE, loginData)
+        const res = RequestService.postRequest(Routes.LOGIN_ROUTE, loginData)
             .then(res => {
                 setLoginStatus(res.status);
                 setRedirect(true);
                 setResponse(res.data);
                 
-                document.cookie = `token=${res.data.tokenInfo.accessToken}; max-age=${60 * 60 * 1000}`;
+                if (CookieService.getCookie("token") !== null) {
+                    const token = CookieService.getCookie("token");
+                    if (!CookieService.validateExpireDate(token)) {
+                        CookieService.setTokenCookie(res.data.tokenInfo.accessToken);
+                        return;
+                    }
+                }
+
+                CookieService.setTokenCookie(res.data.tokenInfo.accessToken);
             })
-            .catch(err => setLoginStatus(err.status))
+            .catch(err => setLoginStatus(err.status));
         
     };
 
@@ -55,12 +63,15 @@ const LoginForm = () => {
         return <Navigate to={Routes.MAIN_PAGE_ROUTE} />;
     }
 
+    const buttonConfig = {
+        buttonName: "submit"
+    }
+
     return (
         <StyledForm onSubmit={handleLogin}>
             <Input type="text" placeholder={"login"} onChange={handleChange("login")} />
             <Input type="text" placeholder={"password"} onChange={handleChange("password")} />
-            <Input type="text" placeholder={"email"} onChange={handleChange("email")} />
-            <Button buttonName="submit" />
+            <Button buttonConfig={buttonConfig} />
             {renderStatus(loginStatus)}
         </StyledForm>
     )
