@@ -15,6 +15,7 @@ import DropdownMenu from '../ui/DropDownMenu';
 
 import styled from 'styled-components';
 import { useNavigate, useParams } from 'react-router';
+import Loader from '../ui/Loader';
 
 
 const StyledMainGrid = styled.section`
@@ -25,7 +26,6 @@ const StyledMainGrid = styled.section`
     align-items: center;
     justify-items: center;
     margin: 5px;
-    border: 1px solid black;
 `;
 
 const StyledTestSuitesContainer = styled.div`
@@ -33,38 +33,37 @@ const StyledTestSuitesContainer = styled.div`
     grid-template-columns: 1fr 3fr;
     min-width: 100%;
     min-height: 50vh;
-    border: 1px solid black;
     border-radius: 5px;
 `;
 
 const StyledSectionsWrapper = styled.div`
     display: flex;
     flex-direction: column;
-    border: 1px solid black;
 `;
 
 const StyledControllersSection = styled.section`
-    min-width: 90%;
+    min-width: 100%;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
     align-items: center;
-    justify-items: center;
-    margin: 5px;
+    justify-items: flex-start;
+    padding: 5px;
 `;
 
 const StyledProjectInformationSection = styled.section`
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     min-width: 100%;
-    border-top: 1px solid black;
+    border-top: 1px solid #8f8d8dad;
+    padding: 5px;
 `;
 
 const StyledInfoArticle = styled.article`
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     min-width: 100%;
 `;
@@ -74,6 +73,11 @@ const StyledArticleFilterByTag = styled.article`
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
+`;
+
+const StyledBoldTextSpan = styled.span`
+    font-weight: bold;
+    text-align: start;
 `;
 
 const ProjectPage = () => {
@@ -103,7 +107,7 @@ const ProjectPage = () => {
     }, [projectId]);
 
     if (loading) {
-        return <div>Loading...</div>
+        return <Loader />;
     }
 
     const filterByTagDropdownConfig = {
@@ -116,6 +120,7 @@ const ProjectPage = () => {
 
     const createTestSuiteButtonConfig = {
         buttonName: "Create test-suite +",
+        fontColor: "white",
         onClick: handleOpenCreateTestSuitePage
     }
     
@@ -135,14 +140,18 @@ const ProjectPage = () => {
     let filteredTestSuites = project.testSuites.filter(testSuite => testSuite.title.toLowerCase().includes(searchQuery.toLowerCase()));
     filteredTestSuites = filterTag !== "" ? filteredTestSuites.filter(testSuite => testSuite.tag.toLowerCase().includes(filterTag.toLowerCase())) : filteredTestSuites;
     
+    const config = {
+        border: "none"
+    };
+
     return (
         <MainWrapper>
-            <LayoutWrapperWithHeader>
+            <LayoutWrapperWithHeader config={config}>
                 <StyledTestSuitesContainer>
                     <Side>
                         <StyledControllersSection>
                             <Button buttonConfig={createTestSuiteButtonConfig}/>
-                            <Input placeholder={"Search test-suite"} onChange={onChangeSearch} value={searchQuery}/>
+                            <Input placeholder={"Search test-suite"} onChange={onChangeSearch} value={searchQuery} margin={"0px 0px 0px 0px"}/>
                             <StyledArticleFilterByTag>
                                 <label>Filter by tag:</label>
                                 <DropdownMenu onChange={onChangeFilterByTag} selectConfig={filterByTagDropdownConfig}>
@@ -154,8 +163,12 @@ const ProjectPage = () => {
                         </StyledControllersSection>
                         <StyledProjectInformationSection>
                             <h2>Info:</h2>
-                            <StyledInfoArticle><h3>Project:</h3> {project.title}</StyledInfoArticle>
-                            <StyledInfoArticle><h3>Number of test-suites:</h3> {project.testSuites.length}</StyledInfoArticle>
+                            <StyledInfoArticle>
+                                Project: <StyledBoldTextSpan>{project.title}</StyledBoldTextSpan>
+                            </StyledInfoArticle>
+                            <StyledInfoArticle>
+                                Number of test-suites: <StyledBoldTextSpan>{project.testSuites.length}</StyledBoldTextSpan>
+                            </StyledInfoArticle>
                         </StyledProjectInformationSection>
                     </Side>
                     <StyledSectionsWrapper>

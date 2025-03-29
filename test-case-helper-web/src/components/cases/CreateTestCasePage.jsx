@@ -5,6 +5,7 @@ import LayoutWrapperWithHeader from '../global-wrappers/LayoutWrapperWithHeader'
 import Button from '../ui/Button';
 import Input from '../ui/Input';
 import Notification from '../notification/Notification';
+import { AiFillCloseCircle } from "react-icons/ai";
 
 import RequestService from '../../service/api/RequestService';
 import CookieService from '../../service/cookie/CookieHandlerService';
@@ -56,22 +57,21 @@ const StyledDeleteButton = styled.button`
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 1px solid red;
-    border-radius: 50%;
-    background-color: #ff0000dc;
     width: 15px;
-    font-size: 10px;
+    font-size: 15px;
+    color: red;
     margin-left: 5px;
     cursor: pointer;
 
-    &:hover {
-        background-color: #ff000099;
-    }
-
     &:active {
       transform: scale(0.9);
-  }
+    }
+
+    &:hover {
+        color: #ff0000a7;
+    }
 `;
+
 
 const CreateTestCasePage = () => {
 
@@ -214,6 +214,7 @@ const CreateTestCasePage = () => {
 
     const createTestCaseButtonConfig = {
         buttonName: "Create test-case",
+        fontColor: "white",
         onClick: handleCreateTestCase
     }
 
@@ -221,6 +222,7 @@ const CreateTestCasePage = () => {
         buttonName: "+",
         maxHeight: "20px",
         marginLeft: "5px",
+        fontColor: "white",
         onClick: handleAddTestingDataField
     }
 
@@ -228,6 +230,7 @@ const CreateTestCasePage = () => {
         buttonName: "+",
         maxHeight: "20px",
         marginLeft: "5px",
+        fontColor: "white",
         onClick: handleAddPreconditionField
     }
 
@@ -235,6 +238,7 @@ const CreateTestCasePage = () => {
         buttonName: "+",
         maxHeight: "20px",
         marginLeft: "5px",
+        fontColor: "white",
         onClick: handleAddStepsField
     }
 
@@ -242,6 +246,7 @@ const CreateTestCasePage = () => {
         buttonName: "+",
         maxHeight: "20px",
         marginLeft: "5px",
+        fontColor: "white",
         onClick: handleAddErField
     }
 
@@ -249,9 +254,13 @@ const CreateTestCasePage = () => {
         return <Notification $status={createTestCaseStatus} />
     }
 
+    const mainConfig = {
+        mainContentPosition: "center"
+    }
+
     return (
         <MainWrapper>
-                <LayoutWrapperWithHeader>
+                <LayoutWrapperWithHeader config={mainConfig}>
                     <StyledCreateTestCaseForm>
                         <label>Create your test-case</label>
                         <StyledFieldsWrapper>
@@ -265,8 +274,10 @@ const CreateTestCasePage = () => {
                                     testingDataField.map((field, index) => (
                                         <StyledAddedField key={index}>
                                             {index + 1}.
-                                            <Input onChange={(e) => handleTestingDataChange(index, e)}/>
-                                            <StyledDeleteButton onClick={(e) => handleDeleteTestingDataField(e, index)}>x</StyledDeleteButton>
+                                            <Input onChange={(e) => handleTestingDataChange(index, e)} margin={"5px 0 5px 0"}/>
+                                            <StyledDeleteButton onClick={(e) => handleDeleteTestingDataField(e, index)}>
+                                                <AiFillCloseCircle />
+                                            </StyledDeleteButton>
                                         </StyledAddedField>
                                     ))
                                 }
@@ -280,8 +291,10 @@ const CreateTestCasePage = () => {
                                     preconditionField.map((field, index) => (
                                         <StyledAddedField key={index}>
                                             {index + 1}.
-                                            <Input onChange={(e) => handlePreconditionChange(index, e)}/>
-                                            <StyledDeleteButton onClick={(e) => handleDeletePreconditionField(e, index)}>x</StyledDeleteButton>
+                                            <Input onChange={(e) => handlePreconditionChange(index, e)} margin={"5px 0 5px 0"} />
+                                            <StyledDeleteButton onClick={(e) => handleDeletePreconditionField(e, index)}>
+                                                <AiFillCloseCircle />
+                                            </StyledDeleteButton>
                                         </StyledAddedField>
                                     ))
                                 }
@@ -295,8 +308,10 @@ const CreateTestCasePage = () => {
                                     stepField.map((field, index) => (
                                         <StyledAddedField key={index}>
                                             {index + 1}.
-                                            <Input onChange={(e) => handleStepsChange(index, e)}/>
-                                            <StyledDeleteButton onClick={(e) => handleDeleteStepsField(e, index)}>x</StyledDeleteButton>
+                                            <Input onChange={(e) => handleStepsChange(index, e)} margin={"5px 0 5px 0"} />
+                                            <StyledDeleteButton onClick={(e) => handleDeleteStepsField(e, index)}>
+                                                <AiFillCloseCircle />
+                                            </StyledDeleteButton>
                                         </StyledAddedField>
                                     ))
                                 }
@@ -310,8 +325,10 @@ const CreateTestCasePage = () => {
                                     erField.map((field, index) => (
                                         <StyledAddedField key={index}>
                                             {index + 1}.
-                                            <Input onChange={(e) => handleErChange(index, e)}/>
-                                            <StyledDeleteButton onClick={(e) => handleDeleteErField(e, index)}>x</StyledDeleteButton>
+                                            <Input onChange={(e) => handleErChange(index, e)} margin={"5px 0 5px 0"} />
+                                            <StyledDeleteButton onClick={(e) => handleDeleteErField(e, index)}>
+                                                <AiFillCloseCircle />
+                                            </StyledDeleteButton>
                                         </StyledAddedField>
                                     ))
                                 }

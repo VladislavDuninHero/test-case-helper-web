@@ -11,6 +11,7 @@ import LayoutWrapperWithHeader from '../global-wrappers/LayoutWrapperWithHeader.
 import styled from 'styled-components';
 import Button from '../ui/Button.jsx';
 import { Navigate, useNavigate } from 'react-router';
+import Loader from '../ui/Loader.jsx';
 
 const StyledMainGrid = styled.section`
     min-width: 100%;
@@ -20,7 +21,8 @@ const StyledMainGrid = styled.section`
     align-items: center;
     justify-items: center;
     margin: 30px 5px 5px 5px;
-    border: 1px solid black;
+    padding: 30px;
+    border-radius: 5px;
 `;
 
 const StyledButtonControllerContainer = styled.section`
@@ -33,6 +35,9 @@ const StyledButtonControllerContainer = styled.section`
 const ProjectsPage = () => {
     
     const [projects, setProjects] = useState([]);
+    const [actionDeleteStatus, setActionDeleteStatus] = useState(null);
+    const [responseAfterDeleteProject, setResponseAfterDeleteProject] = useState({});
+    const [projectsLoading, setProjectLoading] = useState(true);
     const {setError} = useError();
     const navigate = useNavigate();
 
@@ -41,8 +46,11 @@ const ProjectsPage = () => {
     }
 
     const createProjectButtonConfig = {
-        buttonName: "Create project",
-        onClick: handleCreateProject
+        buttonName: "Create project +",
+        onClick: handleCreateProject,
+        fontColor: "white",
+        fontSize: "15px",
+        padding: "8px"
     }
 
     const token = CookieService.getCookie("token");
@@ -51,12 +59,31 @@ const ProjectsPage = () => {
         RequestService.getAuthorizedRequest(Routes.PROJECTS_ROUTE, token)
             .then(res => {
                 setProjects(res.data);
+                setProjectLoading(false)
             })
             .catch(() => {
                 setError(true);
             });
     }, []);
 
+    const deleteProject = (project) => {
+            
+        RequestService.deleteAuthorizedRequest(`${Routes.PROJECTS_ROUTE}/${project.id}/delete`, token)
+            .then(res => {
+                setResponseAfterDeleteProject(res.data);
+                setActionDeleteStatus(res.status);
+                setProjects(projects.filter(currentProject => currentProject.id !== project.id));
+            })
+            .catch(err => {
+                setActionDeleteStatus(err.status)
+            });
+                
+    }
+
+    const navigateToUpdateProjectPage = (project) => {
+        navigate(`${Routes.MAIN_PAGE_ROUTE}/${project.id}/update`);
+    }
+    
     return (
         <>
             <MainWrapper>
@@ -64,13 +91,22 @@ const ProjectsPage = () => {
                     <StyledButtonControllerContainer>
                         <Button buttonConfig={createProjectButtonConfig} />
                     </StyledButtonControllerContainer>
-                    <StyledMainGrid>
-                        {
-                            projects.length > 0 
-                            ? projects.map((project) => <Project key={project.id} project={project} />)
-                            : <div>Projects not found</div>
-                        }
-                    </StyledMainGrid>
+                    { projectsLoading ? <Loader /> :
+                        <StyledMainGrid>
+                            {
+                                projects.length > 0 
+                                ? projects.map((project) => 
+                                    <Project 
+                                        key={project.id} 
+                                        project={project} 
+                                        onDelete={() => deleteProject(project)}
+                                        onUpdate={() => navigateToUpdateProjectPage(project)}
+                                    />
+                                )
+                                : <div>Projects not found</div>
+                            }
+                        </StyledMainGrid>
+                    }
                 </LayoutWrapperWithHeader>
             </MainWrapper>
         </>

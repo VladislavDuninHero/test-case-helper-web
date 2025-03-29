@@ -28,6 +28,24 @@ export default class RequestService {
         );
     }
 
+    static putAuthorizedRequest(uri, body, token) {
+        return axios.put(uri, body, {
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        }
+    );
+    }
+
+    static deleteAuthorizedRequest(uri, token) {
+        return axios.delete(uri, {
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            }
+        );
+    }
+
     static validateTokenRequest(token) {
         return this.postRequest(uri, {token: token});
     }

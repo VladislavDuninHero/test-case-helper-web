@@ -9,7 +9,7 @@ const StyledTestCaseContainer = styled.article`
     flex-direction: column;
     justify-content: center;
     align-items: stretch;
-    border: 1px solid black;
+    border: 1px solid #8f8d8dad;
     border-radius: 5px;
     padding: 5px;
     min-width: 100%;
@@ -37,6 +37,8 @@ const TestCase = ({testCase}) => {
 
     const buttonConfig = {
         buttonName: "Open test-case",
+        borderRadius: "5px",
+        fontColor: "white",
         onClick: handleOpenTestCase
     };
 

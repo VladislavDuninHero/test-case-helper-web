@@ -32,6 +32,10 @@ const Modal = ({isOpen, closeModal, children}) => {
 
     const closeModalButtonConfig = {
         buttonName: "Close",
+        borderRadius: "5px",
+        fontColor: "white",
+        backGroundColor: "red",
+        backGroundHoverColor: "#ff0000ab",
         onClick: closeModal
     }
 

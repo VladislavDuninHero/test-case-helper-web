@@ -9,9 +9,14 @@ const StyledLoginFormWrapper = styled.section`
     justify-content: center;
     flex-direction: column;
     align-items: center;
-    border: 1px solid black;
-    border-radius: 5px;
-    padding: 5px;
+    border: 1px solid #8f8d8dad;
+    border-radius: 10px;
+    padding: 10px;
+`;
+
+const StyledFormLabel = styled.label`
+  font-size: large;
+  font-weight: bold;
 `;
 
 const LoginPage = () => {
@@ -19,7 +24,7 @@ const LoginPage = () => {
     <>
     <MainWrapper>
         <StyledLoginFormWrapper>
-            <label>Login</label>
+            <StyledFormLabel>Login</StyledFormLabel>
             <LoginForm />
         </StyledLoginFormWrapper>
     </MainWrapper>

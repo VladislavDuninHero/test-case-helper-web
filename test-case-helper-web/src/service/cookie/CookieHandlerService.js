@@ -15,6 +15,11 @@ export default class CookieService {
     }
 
     static setTokenCookie(accessToken) {
+        if (this.getCookie("token") !== null && !this.validateExpireDate(this.getCookie("token"))) {
+            
+            return;
+        }
+        
         document.cookie = `token=${accessToken}; max-age=${60 * 60 * 1000}`;
     }
 
@@ -23,5 +28,9 @@ export default class CookieService {
         const currentTime = Date.now() / 1000;
         
         return decoded.exp < currentTime;
+    }
+
+    static deleteCookie(name) {
+        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
     }
 }

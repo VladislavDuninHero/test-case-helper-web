@@ -15,6 +15,7 @@ import { Routes } from '../../constants/Route';
 
 import styled from 'styled-components';
 import TestCase from '../cases/TestCase';
+import Loader from '../ui/Loader';
 
 const StyledMainGrid = styled.section`
     min-width: 90%;
@@ -23,21 +24,18 @@ const StyledMainGrid = styled.section`
     gap: 10px;
     align-items: start;
     justify-items: center;
-    border: 1px solid black;
 `;
 
 const StyledTestSuiteContainer = styled.div`
     display: flex;
     flex-direction: column;
     min-width: 100%;
-    border: 1px solid black;
     border-radius: 5px;
 `;
 
 const StyledSectionsWrapper = styled.div`
     display: flex;
     flex-direction: column;
-    border: 1px solid black;
     min-width: 100%;
     padding: 5px;
 `;
@@ -55,20 +53,26 @@ const StyledProjectInformationSection = styled.section`
     justify-content: flex-start;
     align-items: center;
     min-width: 100%;
-    border-top: 1px solid black;
+    border-top: 1px solid #8f8d8dad;
+    padding: 5px;
 `;
 
 const StyledInfoArticle = styled.article`
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-right: 5px;
+    margin-right: 15px;
 `;
 
 const StyledArticleFilterByTag = styled.article`
     display: flex;
     justify-content: center;
     align-items: flex-start;
+`;
+
+const StyledControllerSection = styled.div`
+    display: flex;
+    flex-direction: column;
 `;
 
 const SuitePage = () => {
@@ -118,7 +122,7 @@ const SuitePage = () => {
     }
 
     if (loading) {
-        return <div>Loading...</div>
+        return <Loader />
     }
 
     const onChangeSearch = (e) => {
@@ -129,6 +133,7 @@ const SuitePage = () => {
 
     const createTestCaseButtonConfig = {
         buttonName: "Create test-case +",
+        fontColor: "white",
         onClick: handleCreateTestCase
     }
 
@@ -139,17 +144,17 @@ const SuitePage = () => {
         <MainWrapper>
             <LayoutWrapperWithHeader>
                 <StyledTestSuiteContainer>
-                    <Side>
+                    <StyledControllerSection>
                         <StyledControllersSection>
                             <Button buttonConfig={createTestCaseButtonConfig}/>
-                            <Input placeholder={"Search test-case"} onChange={onChangeSearch} value={searchQuery}/>
+                            <Input placeholder={"Search test-case"} onChange={onChangeSearch} value={searchQuery} minWidthPercent={"0"}/>
                         </StyledControllersSection>
                         <StyledProjectInformationSection>
                             <StyledInfoArticle><h3>Project:</h3> {project.title}</StyledInfoArticle>
                             <StyledInfoArticle><h3>Test-suite:</h3> {testSuite.title}</StyledInfoArticle>
                             <StyledInfoArticle><h3>Number of test-cases:</h3> {testCases.length}</StyledInfoArticle>
                         </StyledProjectInformationSection>
-                    </Side>
+                    </StyledControllerSection>
                     <StyledSectionsWrapper>
                         <StyledMainGrid>
                             {

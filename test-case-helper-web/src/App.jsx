@@ -13,21 +13,27 @@ import TestCase from './components/cases/TestCase.jsx';
 import CreateTestCasePage from './components/cases/CreateTestCasePage.jsx';
 import CreateTestSuitePage from './components/suites/CreateTestSuitePage.jsx';
 
+import AuthProvider from './service/auth/AuthProvider.jsx';
+import UpdateProjectPage from './components/projects/UpdateProjectPage.jsx';
+
 function App() {
   return (
     <BrowserRouter>
       <GlobalStyle />
-      <Routes>
-        <Route path="/" element={<LoginPage />}/>
-        <Route path="/projects" element={<ProjectsPage />} />
-        <Route path="/projects/:projectId" element={<ProjectPage />} />
-        <Route path="/projects/create" element={<CreateProjectPage />} />
-        <Route path="/projects/:projectId/suite/create" element={<CreateTestSuitePage />} />
-        <Route path="/projects/:projectId/:suiteId" element={<SuitePage />} />
-        <Route path="/projects/:projectId/:suiteId/case/create" element={<CreateTestCasePage />} />
-        <Route path="/projects/:projectId/suites/:suiteId/case/:caseId" element={<TestCase />}/>
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+      <AuthProvider>
+        <Routes>
+          <Route path="/" element={<LoginPage />}/>
+          <Route path="/projects" element={<ProjectsPage />} />
+          <Route path="/projects/:projectId" element={<ProjectPage />} />
+          <Route path="/projects/create" element={<CreateProjectPage />} />
+          <Route path="/projects/:projectId/update" element={<UpdateProjectPage />} />
+          <Route path="/projects/:projectId/suite/create" element={<CreateTestSuitePage />} />
+          <Route path="/projects/:projectId/:suiteId" element={<SuitePage />} />
+          <Route path="/projects/:projectId/:suiteId/case/create" element={<CreateTestCasePage />} />
+          <Route path="/projects/:projectId/suites/:suiteId/case/:caseId" element={<TestCase />}/>
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </AuthProvider>
     </BrowserRouter>
   )
 }
