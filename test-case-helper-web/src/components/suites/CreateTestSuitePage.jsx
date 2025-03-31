@@ -4,8 +4,8 @@ import MainWrapper from '../global-wrappers/MainWrapper';
 import LayoutWrapperWithHeader from '../global-wrappers/LayoutWrapperWithHeader';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
-import DropdownMenu from '../ui/DropDownMenu';
-import Notification from '../notification/Notification';
+
+import Notification from '../notification/Notification.jsx';
 
 import RequestService from '../../service/api/RequestService';
 import CookieService from '../../service/cookie/CookieHandlerService';
@@ -13,6 +13,7 @@ import { Routes } from '../../constants/Route';
 
 import styled from 'styled-components';
 import { useParams } from 'react-router';
+import DropdownMenu from '../ui/DropDownMenu';
 
 const StyledCreateTestSuiteForm = styled.form`
     display: flex;
