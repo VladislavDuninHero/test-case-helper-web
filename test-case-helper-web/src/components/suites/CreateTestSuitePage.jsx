@@ -13,7 +13,7 @@ import { Routes } from '../../constants/Route';
 
 import styled from 'styled-components';
 import { useParams } from 'react-router';
-import DropdownMenu from '../ui/DropDownMenu';
+import Dropdown from '../ui/Dropdown.jsx';
 
 const StyledCreateTestSuiteForm = styled.form`
     display: flex;
@@ -46,7 +46,7 @@ const StyledLabel = styled.label`
 `;
 
 const CreateTestSuitePage = () => {
-
+    
     const {projectId} = useParams();
     const [testSuiteData, setTestSuiteData] = useState({
         projectId: projectId
@@ -88,7 +88,7 @@ const CreateTestSuitePage = () => {
     const mainConfig = {
         mainContentPosition: "center"
     }
-
+    
     return (
         <MainWrapper>
             <LayoutWrapperWithHeader config={mainConfig}>
@@ -96,11 +96,11 @@ const CreateTestSuitePage = () => {
                     <Input placeholder={"Title"} onChange={handleChange("title")}/>
                     <StyledSelectTagContainer>
                         <StyledLabel>Tag:</StyledLabel>
-                        <DropdownMenu selectConfig={selectTagConfig} onChange={handleChange("tag")}>
+                        <Dropdown selectConfig={selectTagConfig} onChange={handleChange("tag")}>
                             <option>...</option>
                             <option>SMOKE</option>
                             <option>CRITICAL PATH</option>
-                        </DropdownMenu>
+                        </Dropdown>
                     </StyledSelectTagContainer>
                     <StyledTextArea placeholder="Description" onChange={handleChange("description")}/>
                     <Button buttonConfig={createTestSuiteButtonConfig}/>

@@ -16,7 +16,7 @@ import Input from '../ui/Input';
 import styled from 'styled-components';
 import { useNavigate, useParams } from 'react-router';
 import Loader from '../ui/Loader';
-import DropdownMenu from '../ui/DropDownMenu';
+import Dropdown from '../ui/Dropdown.jsx';
 
 
 const StyledMainGrid = styled.section`
@@ -155,11 +155,11 @@ const ProjectPage = () => {
                             <Input placeholder={"Search test-suite"} onChange={onChangeSearch} value={searchQuery} margin={"0px 0px 0px 0px"}/>
                             <StyledArticleFilterByTag>
                                 <label>Filter by tag:</label>
-                                <DropdownMenu onChange={onChangeFilterByTag} selectConfig={filterByTagDropdownConfig}>
+                                <Dropdown onChange={onChangeFilterByTag} selectConfig={filterByTagDropdownConfig}>
                                     <option>...</option>
                                     <option>SMOKE</option>
                                     <option>CRITICAL PATH</option>
-                                </DropdownMenu>
+                                </Dropdown>
                             </StyledArticleFilterByTag>
                         </StyledControllersSection>
                         <StyledProjectInformationSection>

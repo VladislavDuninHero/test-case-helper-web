@@ -8,7 +8,7 @@ const StyledSelect = styled.select`
     cursor: pointer;
 `;
 
-const DropdownMenu = ({children, onChange, selectConfig}) => {
+const Dropdown = ({children, onChange, selectConfig}) => {
     
     return (
         <StyledSelect onChange={onChange} $borderRadius={selectConfig.borderRadius}>
@@ -17,4 +17,4 @@ const DropdownMenu = ({children, onChange, selectConfig}) => {
     )
 }
 
-export default DropdownMenu;
+export default Dropdown;
