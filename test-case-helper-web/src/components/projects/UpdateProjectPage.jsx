@@ -19,7 +19,7 @@ const StyledUpdateProjectForm = styled.form`
     justify-content: center;
     align-items: center;
     padding: 5px;
-    border: 1px solid black;
+    border: 1px solid #8f8d8dad;
     border-radius: 5px;
 `;
 
@@ -85,6 +85,7 @@ const UpdateProjectPage = () => {
 
     const updateProjectButtonConfig = {
         buttonName: "Update",
+        fontColor: "white",
         onClick: updateProject
     }
 

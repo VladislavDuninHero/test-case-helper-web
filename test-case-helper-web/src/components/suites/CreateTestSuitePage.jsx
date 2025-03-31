@@ -19,7 +19,7 @@ const StyledCreateTestSuiteForm = styled.form`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    border: 1px solid black;
+    border: 1px solid #8f8d8dad;
     padding: 5px;
 `;
 
@@ -76,6 +76,7 @@ const CreateTestSuitePage = () => {
 
     const createTestSuiteButtonConfig = {
         buttonName: "Create test-suite",
+        fontColor: "white",
         onClick: handleCreateTestSuite
     }
 
@@ -95,6 +96,7 @@ const CreateTestSuitePage = () => {
                     <StyledSelectTagContainer>
                         <StyledLabel>Tag:</StyledLabel>
                         <DropdownMenu selectConfig={selectTagConfig} onChange={handleChange("tag")}>
+                            <option>...</option>
                             <option>SMOKE</option>
                             <option>CRITICAL PATH</option>
                         </DropdownMenu>

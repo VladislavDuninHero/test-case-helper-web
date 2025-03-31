@@ -72,8 +72,10 @@ const Project = ({project, onDelete, onUpdate}) => {
     }
     const handleCloseDeleteModal = () => setDeleteModalIsOpen(false);
 
-    const deleteButtonConfig = {
+    const confirmButtonConfig = {
         buttonName: "Confirm",
+        borderRadius: "5px",
+        fontColor: "white",
         onClick: onDelete
     }
 
@@ -106,7 +108,7 @@ const Project = ({project, onDelete, onUpdate}) => {
             </StyledButtonWrapper>
             <Modal isOpen={deleteModalIsOpen} closeModal={handleCloseDeleteModal}>
                 <p>Confirm delete project?</p>
-                <Button buttonConfig={deleteButtonConfig} />
+                <Button buttonConfig={confirmButtonConfig} />
             </Modal>
         </StyledProjectContainer>
         </>

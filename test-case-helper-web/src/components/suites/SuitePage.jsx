@@ -22,7 +22,7 @@ const StyledMainGrid = styled.section`
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 0.2fr));
     gap: 10px;
-    align-items: start;
+    align-items: stretch;
     justify-items: center;
 `;
 

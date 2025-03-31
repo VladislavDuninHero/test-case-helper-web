@@ -20,7 +20,7 @@ const StyledCreateTestCaseForm = styled.form`
     justify-content: center;
     align-items: center;
     padding: 5px;
-    border: 1px solid black;
+    border: 1px solid #8f8d8dad;
     border-radius: 5px;
     min-width: 300px;
 `;
@@ -97,7 +97,7 @@ const CreateTestCasePage = () => {
     const testCaseData = testingDataField.map(field => {return {step: field.value}});
     const precondition = preconditionField.map(field => {return {step: field.value}});
     const steps = stepField.map(field => {return {step: field.value}});
-    const expectedResult = testingDataField.map(field => {return {step: field.value}});
+    const expectedResult = erField.map(field => {return {step: field.value}});
 
     const createTestCaseData = {
         ...testCase,
@@ -161,6 +161,7 @@ const CreateTestCasePage = () => {
     };
     const handleErChange = (index, event) => {
         const er = [...erField];
+        console.log(er)
         er[index].value = event.target.value;
         setErField(er);
     };
@@ -215,6 +216,7 @@ const CreateTestCasePage = () => {
     const createTestCaseButtonConfig = {
         buttonName: "Create test-case",
         fontColor: "white",
+        border: "1px solid blue",
         onClick: handleCreateTestCase
     }
 
@@ -223,6 +225,7 @@ const CreateTestCasePage = () => {
         maxHeight: "20px",
         marginLeft: "5px",
         fontColor: "white",
+        border: "1px solid blue",
         onClick: handleAddTestingDataField
     }
 
@@ -231,6 +234,7 @@ const CreateTestCasePage = () => {
         maxHeight: "20px",
         marginLeft: "5px",
         fontColor: "white",
+        border: "1px solid blue",
         onClick: handleAddPreconditionField
     }
 
@@ -239,6 +243,7 @@ const CreateTestCasePage = () => {
         maxHeight: "20px",
         marginLeft: "5px",
         fontColor: "white",
+        border: "1px solid blue",
         onClick: handleAddStepsField
     }
 
@@ -247,6 +252,7 @@ const CreateTestCasePage = () => {
         maxHeight: "20px",
         marginLeft: "5px",
         fontColor: "white",
+        border: "1px solid blue",
         onClick: handleAddErField
     }
 

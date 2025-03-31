@@ -9,6 +9,7 @@ const StyledSelect = styled.select`
 `;
 
 const DropdownMenu = ({children, onChange, selectConfig}) => {
+    
     return (
         <StyledSelect onChange={onChange} $borderRadius={selectConfig.borderRadius}>
             {children}

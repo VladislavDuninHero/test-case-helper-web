@@ -61,6 +61,7 @@ const CreateProjectPage = () => {
             token
         ).then(res => {
             setResponse(res.data);
+            setCreateProjectRequestStatus(res.status);
         })
         .catch(err => setCreateProjectRequestStatus(err.status));
     }
@@ -71,6 +72,8 @@ const CreateProjectPage = () => {
 
     const createProjectButtonConfig = {
         buttonName: "Create project",
+        fontColor: "white",
+        border: "1px solid blue",
         onClick: createProject
     }
 

@@ -7,7 +7,7 @@ import Modal from '../ui/Modal';
 const StyledTestCaseContainer = styled.article`
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-between;
     align-items: stretch;
     border: 1px solid #8f8d8dad;
     border-radius: 5px;
