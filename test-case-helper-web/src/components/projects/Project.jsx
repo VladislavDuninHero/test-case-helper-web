@@ -4,10 +4,7 @@ import Button from '../ui/Button';
 import KebabMenu from '../ui/KebabMenu';
 import Modal from '../ui/Modal';
 
-import RequestService from '../../service/api/RequestService';
-import CookieService from '../../service/cookie/CookieHandlerService';
 import { useAuth } from '../../service/auth/AuthProvider';
-import { Routes } from '../../constants/Route';
 
 import styled from 'styled-components';
 import { useNavigate } from 'react-router';

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
 import { Routes } from '../../constants/Route';
 
@@ -8,7 +8,6 @@ import Button from '../ui/Button';
 import { Navigate } from 'react-router';
 import Notification from '../notification/Notification';
 import RequestService from '../../service/api/RequestService';
-import CookieService from '../../service/cookie/CookieHandlerService';
 import { useAuth } from '../../service/auth/AuthProvider';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 

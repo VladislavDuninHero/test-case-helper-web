@@ -3,13 +3,12 @@ import styled from 'styled-components'
 
 import Profile from '../user/Profile';
 import NavigationPanel from '../navigation/NavigationPanel';
-import Button from '../ui/Button';
 import { SlArrowLeft } from "react-icons/sl";
 import { SlLogout } from "react-icons/sl";
 
 import CookieService from '../../service/cookie/CookieHandlerService';
 
-import { Navigate, useNavigate } from 'react-router';
+import { useNavigate } from 'react-router';
 
 const StyledHeader = styled.header`
     display: flex;

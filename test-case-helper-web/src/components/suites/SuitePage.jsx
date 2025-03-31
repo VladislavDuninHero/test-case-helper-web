@@ -3,10 +3,8 @@ import { useNavigate, useParams } from 'react-router';
 
 import LayoutWrapperWithHeader from '../global-wrappers/LayoutWrapperWithHeader';
 import MainWrapper from '../global-wrappers/MainWrapper';
-import Side from '../sides/Side';
 import Button from '../ui/Button';
 import Input from '../ui/Input';
-import DropdownMenu from '../ui/DropDownMenu';
 
 import { useError } from '../hooks/UseErrorHandler';
 import RequestService from '../../service/api/RequestService';

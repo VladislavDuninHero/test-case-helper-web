@@ -10,7 +10,6 @@ import { useError } from '../hooks/UseErrorHandler.jsx';
 import LayoutWrapperWithHeader from '../global-wrappers/LayoutWrapperWithHeader.jsx';
 import styled from 'styled-components';
 import Button from '../ui/Button.jsx';
-import { Navigate, useNavigate } from 'react-router';
 import Loader from '../ui/Loader.jsx';
 
 const StyledMainGrid = styled.section`
