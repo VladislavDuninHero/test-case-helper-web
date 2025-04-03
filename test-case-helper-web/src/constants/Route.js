@@ -10,4 +10,5 @@ export class Routes {
     static TEST_SUITE_ROUTE = "http://localhost:4040/api/v1/suite";
     static CREATE_TEST_SUITE_ROUTE = "http://localhost:4040/api/v1/suite/create";
     static CREATE_TEST_CASE_ROUTE = "http://localhost:4040/api/v1/case/create";
+    static LOAD_EXCEL_BACKUP_ROUTE = "http://localhost:4040/api/v1/converters/excel";
 }

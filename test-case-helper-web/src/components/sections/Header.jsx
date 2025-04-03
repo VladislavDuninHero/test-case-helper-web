@@ -18,6 +18,7 @@ const StyledHeader = styled.header`
     padding: 5px;
     border-radius: 0px 0px 5px 5px;
     min-width: 100%;
+    background-color: #ffffff;
 `;
 
 const StyledHeaderContainer = styled.section`

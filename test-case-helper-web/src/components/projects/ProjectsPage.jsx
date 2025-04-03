@@ -12,6 +12,8 @@ import styled from 'styled-components';
 import Button from '../ui/Button.jsx';
 import Loader from '../ui/Loader.jsx';
 
+import { useNavigate } from 'react-router';
+
 const StyledMainGrid = styled.section`
     min-width: 100%;
     display: grid;
@@ -82,11 +84,15 @@ const ProjectsPage = () => {
     const navigateToUpdateProjectPage = (project) => {
         navigate(`${Routes.MAIN_PAGE_ROUTE}/${project.id}/update`);
     }
+
+    const mainConfig = {
+        border: "none"
+    }
     
     return (
         <>
             <MainWrapper>
-                <LayoutWrapperWithHeader>
+                <LayoutWrapperWithHeader config={mainConfig}>
                     <StyledButtonControllerContainer>
                         <Button buttonConfig={createProjectButtonConfig} />
                     </StyledButtonControllerContainer>

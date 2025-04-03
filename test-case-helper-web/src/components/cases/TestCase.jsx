@@ -14,6 +14,7 @@ const StyledTestCaseContainer = styled.article`
     padding: 5px;
     min-width: 100%;
     max-width: 100%;
+    background-color: #ffffff;
 `;
 
 const StyledStepContainer = styled.p`

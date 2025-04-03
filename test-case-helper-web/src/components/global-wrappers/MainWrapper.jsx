@@ -8,7 +8,7 @@ const Wrapper = styled.div`
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background-color: #F2F2F2;
+    background-color: #edeef0;
 `
 
 const MainWrapper = ({children}) => {

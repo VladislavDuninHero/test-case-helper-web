@@ -138,9 +138,13 @@ const SuitePage = () => {
     let testCases = testSuite.testCases;
     let filteredTestCases = testCases.filter(testCase => testCase.title.toLowerCase().includes(searchQuery.toLowerCase()));
 
+    const mainConfig = {
+        border: "none"
+    }
+
     return (
         <MainWrapper>
-            <LayoutWrapperWithHeader>
+            <LayoutWrapperWithHeader config={mainConfig}>
                 <StyledTestSuiteContainer>
                     <StyledControllerSection>
                         <StyledControllersSection>

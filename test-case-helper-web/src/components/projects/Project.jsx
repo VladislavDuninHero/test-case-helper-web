@@ -22,6 +22,7 @@ const StyledProjectContainer = styled.article`
     min-height: 100%;
     min-width: 100%;
     text-align: center;
+    background-color: #ffffff;
 `;
 
 const StyledButtonWrapper = styled.div`

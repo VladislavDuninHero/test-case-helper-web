@@ -14,9 +14,9 @@ import Input from '../ui/Input';
 
 
 import styled from 'styled-components';
-import { useNavigate, useParams } from 'react-router';
 import Loader from '../ui/Loader';
 import Dropdown from '../ui/Dropdown.jsx';
+import { useNavigate, useParams } from 'react-router';
 
 
 const StyledMainGrid = styled.section`
@@ -76,6 +76,15 @@ const StyledArticleFilterByTag = styled.article`
     align-items: flex-start;
 `;
 
+const StyledArticleConvertControllers = styled.article`
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: stretch;
+    min-width: 100%;
+    min-height: 100%;
+`;
+
 const StyledBoldTextSpan = styled.span`
     font-weight: bold;
     text-align: start;
@@ -119,10 +128,32 @@ const ProjectPage = () => {
         return navigate(`/projects/${projectId}/suite/create`)
     }
 
+    const handleLoadExcelBackup = () => {
+        RequestService.getAuthorizedRequestWithBlob(`${Routes.LOAD_EXCEL_BACKUP_ROUTE}?projectId=${projectId}`, token)
+            .then(res => {
+                const url = window.URL.createObjectURL(new Blob([res.data]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', `project_${projectId}_backup.xlsx`);
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+            })
+            .catch(err => {
+                console.log(err);
+            });
+    }
+
     const createTestSuiteButtonConfig = {
         buttonName: "Create test-suite +",
         fontColor: "white",
         onClick: handleOpenCreateTestSuitePage
+    }
+
+    const convertAndLoadExcelBackupButton = {
+        buttonName: "Load excel",
+        fontColor: "white",
+        onClick: handleLoadExcelBackup
     }
     
     const onChangeSearch = (e) => {
@@ -152,7 +183,7 @@ const ProjectPage = () => {
                     <Side>
                         <StyledControllersSection>
                             <Button buttonConfig={createTestSuiteButtonConfig}/>
-                            <Input placeholder={"Search test-suite"} onChange={onChangeSearch} value={searchQuery} margin={"0px 0px 0px 0px"}/>
+                            <Input placeholder={"Search test-suite"} minWidthPercent={"auto"} onChange={onChangeSearch} value={searchQuery} margin={"0px 0px 0px 0px"}/>
                             <StyledArticleFilterByTag>
                                 <label>Filter by tag:</label>
                                 <Dropdown onChange={onChangeFilterByTag} selectConfig={filterByTagDropdownConfig}>
@@ -161,6 +192,9 @@ const ProjectPage = () => {
                                     <option>CRITICAL PATH</option>
                                 </Dropdown>
                             </StyledArticleFilterByTag>
+                            <StyledArticleConvertControllers>
+                                <Button buttonConfig={convertAndLoadExcelBackupButton}/>
+                            </StyledArticleConvertControllers>
                         </StyledControllersSection>
                         <StyledProjectInformationSection>
                             <h2>Info:</h2>

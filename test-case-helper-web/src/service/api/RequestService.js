@@ -28,6 +28,15 @@ export default class RequestService {
         );
     }
 
+    static getAuthorizedRequestWithBlob(uri, token) {
+        return axios.get(uri, {
+            headers: {
+                Authorization: `Bearer ${token}`, 
+            },
+            responseType: "blob"
+        })
+    }
+
     static putAuthorizedRequest(uri, body, token) {
         return axios.put(uri, body, {
             headers: {
