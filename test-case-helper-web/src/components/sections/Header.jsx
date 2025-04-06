@@ -31,7 +31,6 @@ const StyledUserArticle = styled.article`
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 5px;
 `;
 
 const StyledBackButton = styled.button`
@@ -51,12 +50,13 @@ const StyledLogoutButton = styled.button`
     justify-content: center;
     align-items: center;
     margin-left: 5px;
-    font-size: 25px;
+    font-size: 20px;
+    color: #5181b8;
 
     &:hover {
         color: red;
     }
-`;
+`; 
 
 const Header = () => {
 

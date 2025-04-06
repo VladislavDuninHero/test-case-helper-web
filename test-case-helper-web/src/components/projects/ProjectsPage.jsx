@@ -21,8 +21,7 @@ const StyledMainGrid = styled.section`
     gap: 10px;
     align-items: center;
     justify-items: center;
-    margin: 30px 5px 5px 5px;
-    padding: 30px;
+    margin-top: 30px;
     border-radius: 5px;
 `;
 
@@ -86,7 +85,8 @@ const ProjectsPage = () => {
     }
 
     const mainConfig = {
-        border: "none"
+        border: "none",
+        alignItems: "stretch"
     }
     
     return (

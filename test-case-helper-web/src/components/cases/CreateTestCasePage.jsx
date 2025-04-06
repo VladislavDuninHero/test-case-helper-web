@@ -161,7 +161,6 @@ const CreateTestCasePage = () => {
     };
     const handleErChange = (index, event) => {
         const er = [...erField];
-        console.log(er)
         er[index].value = event.target.value;
         setErField(er);
     };
