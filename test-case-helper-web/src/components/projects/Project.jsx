@@ -15,7 +15,6 @@ const StyledProjectContainer = styled.article`
     flex-direction: column;
     align-items: flex-start;
     justify-content: space-between;
-    margin: 5px;
     border: 1px solid #8f8d8dad;
     border-radius: 5px;
     padding: 5px;
@@ -98,7 +97,7 @@ const Project = ({project, onDelete, onUpdate}) => {
     return (
         <>
         <StyledProjectContainer data-projectid={project.id}>
-            <KebabMenu config={kebabMenuConfig}/>
+            <KebabMenu config={kebabMenuConfig} />
             <StyledTitleAttrContainer>Project: <StyledBoldTextSpan>{project.title}</StyledBoldTextSpan></StyledTitleAttrContainer>
             <StyledDescriptionAttrContainer>Description: <StyledBoldTextSpan>{project.description}</StyledBoldTextSpan></StyledDescriptionAttrContainer>
             <StyledButtonWrapper>

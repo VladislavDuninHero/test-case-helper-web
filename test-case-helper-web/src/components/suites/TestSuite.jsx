@@ -3,9 +3,15 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 
 import Button from '../ui/Button';
+import KebabMenu from '../ui/KebabMenu';
+import Modal from '../ui/Modal';
+
 import { useNavigate } from 'react-router';
 
+import { useAuth } from '../../service/auth/AuthProvider';
+
 const StyledTestSuiteArticle = styled.article`
+    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -54,8 +60,10 @@ const StyledButtonWrapper = styled.div`
     min-width: 100%;
 `;
 
-const TestSuite = ({testSuite, loading, projectId}) => {
+const TestSuite = ({testSuite, loading, projectId, onUpdate, onDelete}) => {
 
+    const {hasPermission, userData} = useAuth();
+    const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
     const navigate = useNavigate();
 
     const handleOpenTestSuite = (e) => {
@@ -72,6 +80,25 @@ const TestSuite = ({testSuite, loading, projectId}) => {
         onClick: handleOpenTestSuite
     }
 
+    const handleOpenDeleteModal = () => {
+        setDeleteModalIsOpen(true);
+    }
+    const handleCloseDeleteModal = () => setDeleteModalIsOpen(false);
+
+    const kebabMenuConfig = {
+        items: [
+            {label: "Update", action: onUpdate, hasPermission: hasPermission("UPDATE_TEST_SUITE")},
+            {label: "Delete", action: handleOpenDeleteModal, hasPermission: hasPermission("DELETE_TEST_SUITE")}
+        ]
+    };
+
+    const confirmButtonConfig = {
+        buttonName: "Confirm",
+        borderRadius: "5px",
+        fontColor: "white",
+        onClick: onDelete
+    }
+
     const renderTestSuite = () => {
         if (loading) {
             return <div>Loading...</div>;
@@ -80,6 +107,7 @@ const TestSuite = ({testSuite, loading, projectId}) => {
         if (!loading) {
             return (
                 <StyledTestSuiteArticle data-testsuiteid={testSuite.id}>
+                    <KebabMenu config={kebabMenuConfig} />
                     <StyledTitleAttrContainer>
                         Title: <StyledBoldTextSpan>{testSuite.title}</StyledBoldTextSpan>
                     </StyledTitleAttrContainer>
@@ -92,6 +120,10 @@ const TestSuite = ({testSuite, loading, projectId}) => {
                     <StyledButtonWrapper>
                         <Button buttonConfig={openTestSuiteButtonConfig}/>
                     </StyledButtonWrapper>
+                    <Modal isOpen={deleteModalIsOpen} closeModal={handleCloseDeleteModal}>
+                        <p>Confirm delete project?</p>
+                        <Button buttonConfig={confirmButtonConfig} />
+                    </Modal>
                 </StyledTestSuiteArticle>
             );
         }

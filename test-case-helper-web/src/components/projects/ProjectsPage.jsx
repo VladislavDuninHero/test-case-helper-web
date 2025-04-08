@@ -20,14 +20,14 @@ const StyledMainGrid = styled.section`
     grid-template-columns: repeat(auto-fit, minmax(250px, 0.2fr));
     gap: 10px;
     align-items: center;
-    justify-items: center;
+    justify-items: stretch;
     margin-top: 30px;
     border-radius: 5px;
 `;
 
 const StyledButtonControllerContainer = styled.section`
     display: flex;
-    justify-content: flex-start;
+    justify-content: stretch;
     align-items: center;
     min-width: 100%;
 `;

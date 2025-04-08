@@ -93,12 +93,12 @@ const SuitePage = () => {
     useEffect(() => {
         RequestService.getAuthorizedRequest(`${Routes.TEST_SUITE_ROUTE}/${suiteId}`, token)
             .then(res => {
-                setTestSuite(res.data)
-                setTestSuiteRequestStatus(res.status)
+                setTestSuite(res.data);
+                setTestSuiteRequestStatus(res.status);
                 setLoading(false);
             })
             .catch(err => {
-                setTestSuiteRequestStatus(err.status)
+                setTestSuiteRequestStatus(err.status);
             });
 
     }, [suiteId]);
@@ -116,7 +116,7 @@ const SuitePage = () => {
     }, [testSuite]);
 
     if (testSuiteRequestStatus === 401 || projectRequestStatus === 401) {
-        navigate("/");   
+        setError(true);   
     }
 
     if (loading) {

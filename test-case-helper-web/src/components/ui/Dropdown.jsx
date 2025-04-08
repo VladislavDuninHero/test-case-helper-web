@@ -8,10 +8,10 @@ const StyledSelect = styled.select`
     cursor: pointer;
 `;
 
-const Dropdown = ({children, onChange, selectConfig}) => {
+const Dropdown = ({children, onChange, selectConfig, value}) => {
     
     return (
-        <StyledSelect onChange={onChange} $borderRadius={selectConfig.borderRadius}>
+        <StyledSelect onChange={onChange} $borderRadius={selectConfig.borderRadius} value={value}>
             {children}
         </StyledSelect>
     )

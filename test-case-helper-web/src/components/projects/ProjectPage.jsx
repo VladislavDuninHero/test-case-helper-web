@@ -31,7 +31,7 @@ const StyledMainGrid = styled.section`
 
 const StyledTestSuitesContainer = styled.div`
     display: grid;
-    grid-template-columns: 1fr 3fr;
+    grid-template-columns: 1fr 4fr;
     min-width: 100%;
     min-height: 50vh;
     border-radius: 5px;
@@ -48,7 +48,8 @@ const StyledControllersSection = styled.section`
     grid-template-columns: 1fr 1fr;
     gap: 10px;
     align-items: center;
-    justify-items: flex-start;
+    justify-content: center;
+    justify-items: stretch;
     padding: 5px;
 `;
 
@@ -73,7 +74,7 @@ const StyledArticleFilterByTag = styled.article`
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: flex-start;
+    align-items: stretch;
 `;
 
 const StyledArticleConvertControllers = styled.article`
@@ -94,6 +95,7 @@ const ProjectPage = () => {
     
     const [project, setProject] = useState([]);
     const [projectRequestStatus, setprojectRequestStatus] = useState(null);
+    const [deleteTestSuiteStatus, setDeleteTestSuiteStatus] = useState(null);
     const {projectId} = useParams();
     const [loading, setLoading] = useState(true);
     const {setError} = useError();
@@ -147,6 +149,7 @@ const ProjectPage = () => {
     const createTestSuiteButtonConfig = {
         buttonName: "Create test-suite +",
         fontColor: "white",
+        fontSize: "15px",
         onClick: handleOpenCreateTestSuitePage
     }
 
@@ -172,6 +175,23 @@ const ProjectPage = () => {
     let filteredTestSuites = project.testSuites.filter(testSuite => testSuite.title.toLowerCase().includes(searchQuery.toLowerCase()));
     filteredTestSuites = filterTag !== "" ? filteredTestSuites.filter(testSuite => testSuite.tag.toLowerCase().includes(filterTag.toLowerCase())) : filteredTestSuites;
     
+    const deleteTestSuite = (testSuite) => {
+                
+        RequestService.deleteAuthorizedRequest(`${Routes.SUITE_ROUTE}/${testSuite.id}/delete`, token)
+            .then(res => {
+                setDeleteTestSuiteStatus(res.status);
+                filteredTestSuites = filteredTestSuites.filter(currentTestSuite => currentTestSuite.id !== testSuite.id);
+            })
+            .catch(err => {
+                setDeleteTestSuiteStatus(err.status);
+            });
+                    
+    }
+
+    const navigateToUpdateTestSuitePage = (testSuite) => {
+        navigate(`${Routes.MAIN_PAGE_ROUTE}/${projectId}/${testSuite.id}/update`);
+    }
+
     const config = {
         border: "none"
     };
@@ -210,7 +230,16 @@ const ProjectPage = () => {
                         <StyledMainGrid>
                             {
                                 filteredTestSuites.length > 0 
-                                ? filteredTestSuites.map((testSuite) => <TestSuite key={testSuite.id} testSuite={testSuite} loading={loading} projectId={projectId} />)
+                                ? filteredTestSuites.map((testSuite) => 
+                                        <TestSuite 
+                                            key={testSuite.id} 
+                                            testSuite={testSuite} 
+                                            loading={loading} 
+                                            projectId={projectId} 
+                                            onDelete={() => deleteTestSuite(testSuite)}
+                                            onUpdate={() => navigateToUpdateTestSuitePage(testSuite)}
+                                        />
+                                    )
                                 : <div>Test-suites not found</div>
                             }
                         </StyledMainGrid>
