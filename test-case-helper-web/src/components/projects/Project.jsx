@@ -99,7 +99,9 @@ const Project = ({project, onDelete, onUpdate}) => {
         <StyledProjectContainer data-projectid={project.id}>
             <KebabMenu config={kebabMenuConfig} />
             <StyledTitleAttrContainer>Project: <StyledBoldTextSpan>{project.title}</StyledBoldTextSpan></StyledTitleAttrContainer>
-            <StyledDescriptionAttrContainer>Description: <StyledBoldTextSpan>{project.description}</StyledBoldTextSpan></StyledDescriptionAttrContainer>
+            <StyledDescriptionAttrContainer>
+                Description: <StyledBoldTextSpan>{project.description}</StyledBoldTextSpan>
+            </StyledDescriptionAttrContainer>
             <StyledButtonWrapper>
                 <Button buttonConfig={buttonConfig} />
             </StyledButtonWrapper>

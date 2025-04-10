@@ -7,7 +7,7 @@ const StyledMain = styled.main`
     flex-direction: column;
     align-items: ${({$alignItems}) => ($alignItems ? $alignItems : "center")};
     justify-content: ${({$mainPosition}) => ($mainPosition ? $mainPosition : "flex-start")};
-    border: ${(props) => (props.$border ? props.$border : "1px solid #8f8d8dad")};
+    border: ${(props) => (props.$border ? props.$border : "none")};
     margin: 5px;
     padding: 5px;
     border-radius: 5px;

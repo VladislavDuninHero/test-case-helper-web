@@ -94,6 +94,7 @@ const StyledBoldTextSpan = styled.span`
 const ProjectPage = () => {
     
     const [project, setProject] = useState([]);
+    const [testSuitesState, setTestSuitesState] = useState([]);
     const [projectRequestStatus, setprojectRequestStatus] = useState(null);
     const [deleteTestSuiteStatus, setDeleteTestSuiteStatus] = useState(null);
     const {projectId} = useParams();
@@ -108,7 +109,8 @@ const ProjectPage = () => {
     useEffect(() => {
         RequestService.getAuthorizedRequest(`${Routes.PROJECTS_ROUTE}/${projectId}`, token)
             .then(res => {
-                setProject(res.data)
+                setProject(res.data);
+                setTestSuitesState(res.data.testSuites);
                 setprojectRequestStatus(res.status)
                 setLoading(false);
             })
@@ -171,16 +173,23 @@ const ProjectPage = () => {
         
         setFilterTag("");
     }
+    
+    const filteredTestSuites = testSuitesState.filter(testSuite => {
+        const matchesSearch = testSuite.title.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesTag = filterTag !== "" 
+             ? testSuite.tag.toLowerCase().includes(filterTag.toLowerCase())
+             : true;
 
-    let filteredTestSuites = project.testSuites.filter(testSuite => testSuite.title.toLowerCase().includes(searchQuery.toLowerCase()));
-    filteredTestSuites = filterTag !== "" ? filteredTestSuites.filter(testSuite => testSuite.tag.toLowerCase().includes(filterTag.toLowerCase())) : filteredTestSuites;
+        return matchesSearch && matchesTag;
+    })
     
     const deleteTestSuite = (testSuite) => {
-                
+        
         RequestService.deleteAuthorizedRequest(`${Routes.SUITE_ROUTE}/${testSuite.id}/delete`, token)
             .then(res => {
                 setDeleteTestSuiteStatus(res.status);
-                filteredTestSuites = filteredTestSuites.filter(currentTestSuite => currentTestSuite.id !== testSuite.id);
+            
+                setTestSuitesState(suites => suites.filter(suite => suite.id !== testSuite.id));
             })
             .catch(err => {
                 setDeleteTestSuiteStatus(err.status);

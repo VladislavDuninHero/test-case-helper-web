@@ -121,7 +121,7 @@ const TestSuite = ({testSuite, loading, projectId, onUpdate, onDelete}) => {
                         <Button buttonConfig={openTestSuiteButtonConfig}/>
                     </StyledButtonWrapper>
                     <Modal isOpen={deleteModalIsOpen} closeModal={handleCloseDeleteModal}>
-                        <p>Confirm delete project?</p>
+                        <p>Confirm delete test-suite?</p>
                         <Button buttonConfig={confirmButtonConfig} />
                     </Modal>
                 </StyledTestSuiteArticle>
