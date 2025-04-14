@@ -13,6 +13,8 @@ import { Routes } from '../../constants/Route';
 
 import styled from 'styled-components';
 import { useParams } from 'react-router';
+import { Navigate } from 'react-router';
+
 import Dropdown from '../ui/Dropdown.jsx';
 
 const StyledCreateTestSuiteForm = styled.form`
@@ -87,6 +89,10 @@ const CreateTestSuitePage = () => {
 
     const mainConfig = {
         mainContentPosition: "center"
+    }
+
+    if (createTestSuiteRequestStatus < 300 && createTestSuiteRequestStatus !== null) {
+        return <Navigate to={`/projects/${projectId}`} />
     }
     
     return (

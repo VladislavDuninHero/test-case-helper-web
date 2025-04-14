@@ -13,6 +13,7 @@ import { Routes } from '../../constants/Route';
 
 import styled from 'styled-components';
 import { useParams } from 'react-router';
+import { Navigate } from 'react-router';
 
 const StyledCreateTestCaseForm = styled.form`
     display: flex;
@@ -75,7 +76,7 @@ const StyledDeleteButton = styled.button`
 
 const CreateTestCasePage = () => {
 
-    const {suiteId} = useParams();
+    const {suiteId, projectId} = useParams();
 
     const [testCase, setTestCase] = useState({
         testSuiteId: suiteId
@@ -261,6 +262,10 @@ const CreateTestCasePage = () => {
 
     const mainConfig = {
         mainContentPosition: "center"
+    }
+
+    if (createTestCaseStatus < 300 && createTestCaseStatus !== null) {
+        return <Navigate to={`/projects/${projectId}/${suiteId}`} />
     }
 
     return (
