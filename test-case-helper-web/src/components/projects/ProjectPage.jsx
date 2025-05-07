@@ -11,7 +11,7 @@ import Side from '../sides/Side';
 import Button from '../ui/Button';
 import TestSuite from '../suites/TestSuite';
 import Input from '../ui/Input';
-
+import Modal from '../ui/Modal.jsx';
 
 import styled from 'styled-components';
 import Loader from '../ui/Loader';
@@ -47,7 +47,7 @@ const StyledControllersSection = styled.section`
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
-    align-items: center;
+    align-items: end;
     justify-content: center;
     justify-items: stretch;
     padding: 5px;
@@ -79,11 +79,11 @@ const StyledArticleFilterByTag = styled.article`
 
 const StyledArticleConvertControllers = styled.article`
     display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
+    flex-direction: row;
+    justify-content: space-between;
     align-items: stretch;
     min-width: 100%;
-    min-height: 100%;
+    min-height: 20px;
 `;
 
 const StyledBoldTextSpan = styled.span`
@@ -91,10 +91,23 @@ const StyledBoldTextSpan = styled.span`
     text-align: start;
 `;
 
+const StyledParsedExcelContainer = styled.article`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-width: 100%;
+`;
+
+const StyledAddExcelBackupForm = styled.form`
+    min-width: 100%;
+`;
+
 const ProjectPage = () => {
     
     const [project, setProject] = useState([]);
     const [testSuitesState, setTestSuitesState] = useState([]);
+    const [parsedExcelBackupStatus, setParsedExcelBackupStatus] = useState(null);
     const [projectRequestStatus, setprojectRequestStatus] = useState(null);
     const [deleteTestSuiteStatus, setDeleteTestSuiteStatus] = useState(null);
     const {projectId} = useParams();
@@ -103,6 +116,14 @@ const ProjectPage = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const [filterTag, setFilterTag] = useState("");
     const navigate = useNavigate();
+    const [addExcelFileModalIsOpen, setaddExcelFileModalIsOpen] = useState(false);
+    const [excelFile, setExcelFile] = useState(null);
+
+    const handleOpenAddExcelFileModal = () => {
+        setaddExcelFileModalIsOpen(true);
+    }
+    const handleCloseAddExcelFileModal = () => setaddExcelFileModalIsOpen(false);
+    const addExcelFile = (e) => setExcelFile(e.target.files[0]);
 
     const token = CookieService.getCookie("token");
 
@@ -148,6 +169,26 @@ const ProjectPage = () => {
             });
     }
 
+    const handleParseExcelBackup = (e) => {
+
+        e.preventDefault();
+
+        const formData = new FormData();
+        formData.append("excelFile", excelFile);
+        formData.append("projectId", projectId);
+
+        RequestService.postAuthorizedRequestWithMultipartData(Routes.LOAD_EXCEL_BACKUP_ROUTE, formData, token)
+            .then(res => {
+                setTestSuitesState(res.data.testSuites);
+                setParsedExcelBackupStatus(res.status);
+                setaddExcelFileModalIsOpen(false);
+                setLoading(false);
+            })
+            .catch(err => {
+                setParsedExcelBackupStatus(err.status);
+            });
+    }
+
     const createTestSuiteButtonConfig = {
         buttonName: "Create test-suite +",
         fontColor: "white",
@@ -159,6 +200,19 @@ const ProjectPage = () => {
         buttonName: "Load excel",
         fontColor: "white",
         onClick: handleLoadExcelBackup
+    }
+
+    const confirmParsedAddedExcelFileButton = {
+        buttonName: "Parse excel",
+        fontColor: "white",
+        onClick: handleOpenAddExcelFileModal
+    }
+
+    const convertAndParseExcelBackupButton = {
+        buttonName: "Confirm parsed",
+        fontColor: "white",
+        minWidth: "100%",
+        onClick: handleParseExcelBackup
     }
     
     const onChangeSearch = (e) => {
@@ -222,7 +276,8 @@ const ProjectPage = () => {
                                 </Dropdown>
                             </StyledArticleFilterByTag>
                             <StyledArticleConvertControllers>
-                                <Button buttonConfig={convertAndLoadExcelBackupButton}/>
+                                <Button buttonConfig={convertAndLoadExcelBackupButton} />
+                                <Button buttonConfig={confirmParsedAddedExcelFileButton} />
                             </StyledArticleConvertControllers>
                         </StyledControllersSection>
                         <StyledProjectInformationSection>
@@ -255,6 +310,15 @@ const ProjectPage = () => {
                     </StyledSectionsWrapper>
                 </StyledTestSuitesContainer>
             </LayoutWrapperWithHeader>
+            <Modal isOpen={addExcelFileModalIsOpen} closeModal={handleCloseAddExcelFileModal}>
+                <p>Add excel file to backup: </p>
+                <StyledParsedExcelContainer>
+                    <StyledAddExcelBackupForm>
+                        <Input margin={"5px 0 5px 0"} type='file' onChange={addExcelFile}/>
+                        <Button buttonConfig={convertAndParseExcelBackupButton} />
+                    </StyledAddExcelBackupForm>
+                </StyledParsedExcelContainer>
+            </Modal>
         </MainWrapper>
     )
 }

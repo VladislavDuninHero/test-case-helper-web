@@ -105,6 +105,7 @@ const UpdateTestSuitePage = () => {
                     <label>Update your project</label>
                     <Input value={testSuiteData.title} onChange={handleChange("title")} placeholder={"Test-suite title"}/>
                     <Dropdown selectConfig={selectTagConfig} onChange={handleChange("tag")} value={testSuiteData.tag}>
+                        <option>...</option>
                         <option>SMOKE</option>
                         <option>CRITICAL PATH</option>
                     </Dropdown>

@@ -19,6 +19,16 @@ export default class RequestService {
         );
     }
 
+    static postAuthorizedRequestWithMultipartData(uri, body, token) {
+        return axios.post(uri, body, {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "multipart/form-data"
+                }
+            }
+        );
+    }
+
     static getAuthorizedRequest(uri, token) {
         return axios.get(uri, {
                 headers: {

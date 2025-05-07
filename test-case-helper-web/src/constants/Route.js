@@ -1,5 +1,4 @@
 
-
 export class Routes {
     static defaultApiUrl = import.meta.env.VITE_API_URL;
 
