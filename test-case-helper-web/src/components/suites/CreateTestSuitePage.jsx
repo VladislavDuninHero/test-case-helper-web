@@ -9,6 +9,7 @@ import Notification from '../notification/Notification.jsx';
 
 import RequestService from '../../service/api/RequestService';
 import CookieService from '../../service/cookie/CookieHandlerService';
+import TagFactory from '../../service/util/TagFactory.js';
 import { Routes } from '../../constants/Route';
 
 import styled from 'styled-components';
@@ -67,6 +68,8 @@ const CreateTestSuitePage = () => {
 
     const handleCreateTestSuite = (e) => {
         e.preventDefault();
+
+        testSuiteData.tag = TagFactory.getTag(testSuiteData.tag);
 
         RequestService.postAuthorizedRequest(Routes.CREATE_TEST_SUITE_ROUTE, testSuiteData, token)
                     .then(res => {

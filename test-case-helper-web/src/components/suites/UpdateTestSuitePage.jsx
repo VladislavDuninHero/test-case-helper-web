@@ -13,6 +13,7 @@ import Notification from '../notification/Notification';
 
 import CookieService from '../../service/cookie/CookieHandlerService';
 import RequestService from '../../service/api/RequestService';
+import TagFactory from '../../service/util/TagFactory';
 import { Routes } from '../../constants/Route';
 
 const StyledUpdateTestSuiteForm = styled.form`
@@ -71,6 +72,8 @@ const UpdateTestSuitePage = () => {
     const handleUpdateTestSuite = (e) => {
         e.preventDefault();
 
+        testSuiteData.tag = TagFactory.getTag(testSuiteData.tag);
+
         RequestService.putAuthorizedRequest(`${Routes.TEST_SUITE_ROUTE}/${suiteId}/update`, testSuiteData, token)
             .then(res => {
                 setUpdateTestSuiteRequestStatus(res.status);
@@ -109,7 +112,7 @@ const UpdateTestSuitePage = () => {
                         <option>SMOKE</option>
                         <option>CRITICAL PATH</option>
                     </Dropdown>
-                    <StyledDescriptionTextArea value={testSuiteData.description} onChange={handleChange("description")} placeholder={"Test-suite description"} />
+                    <StyledDescriptionTextArea value={testSuiteData.description || ""} onChange={handleChange("description")} placeholder={"Test-suite description"} />
                     <Button buttonConfig={updateTestSuiteButtonConfig} />
                     {
                         updateTestSuiteRequestStatus !== null ? renderStatus() : ""

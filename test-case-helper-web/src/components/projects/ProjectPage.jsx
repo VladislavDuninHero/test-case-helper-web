@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 
 import RequestService from '../../service/api/RequestService';
 import CookieService from '../../service/cookie/CookieHandlerService';
+import TagFactory from '../../service/util/TagFactory.js';
 import { Routes } from '../../constants/Route';
 import { useError } from '../hooks/UseErrorHandler';
 
@@ -231,7 +232,7 @@ const ProjectPage = () => {
     const filteredTestSuites = testSuitesState.filter(testSuite => {
         const matchesSearch = testSuite.title.toLowerCase().includes(searchQuery.toLowerCase());
         const matchesTag = filterTag !== "" 
-             ? testSuite.tag.toLowerCase().includes(filterTag.toLowerCase())
+             ? testSuite.tag.toLowerCase().includes(TagFactory.getTag(filterTag).toLowerCase())
              : true;
 
         return matchesSearch && matchesTag;
