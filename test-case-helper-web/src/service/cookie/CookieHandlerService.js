@@ -15,11 +15,14 @@ export default class CookieService {
     }
 
     static setTokenCookie(accessToken) {
-        if (this.getCookie("token") !== null && !this.validateExpireDate(this.getCookie("token"))) {
-            
+        const existingToken = this.getCookie("token");
+        
+        if (existingToken === accessToken) return;
+
+        if (existingToken !== null && !this.validateExpireDate(existingToken)) {
             return;
         }
-        
+
         document.cookie = `token=${accessToken}; max-age=${60 * 60 * 1000}`;
     }
 

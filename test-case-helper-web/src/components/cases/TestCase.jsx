@@ -1,11 +1,15 @@
 import React, { useState } from 'react'
 
+import { useAuth } from '../../service/auth/AuthProvider';
+
 import styled from 'styled-components';
 import Button from '../ui/Button';
 import Modal from '../ui/Modal';
+import KebabMenu from '../ui/KebabMenu';
 
 const StyledTestCaseContainer = styled.article`
     display: flex;
+    position: relative;
     flex-direction: column;
     justify-content: space-between;
     align-items: stretch;
@@ -21,9 +25,11 @@ const StyledStepContainer = styled.p`
     display: flex;
 `;
 
-const TestCase = ({testCase}) => {
+const TestCase = ({testCase, onDelete, onUpdate}) => {
     
     const [modalIsOpen, setModalIsOpen] = useState(false);
+    const {hasPermission, userData} = useAuth(); 
+    const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
 
     const testCaseData = testCase.testCaseData;
     const preconditions = testCase.preconditions;
@@ -43,11 +49,31 @@ const TestCase = ({testCase}) => {
         onClick: handleOpenTestCase
     };
 
+    const handleOpenDeleteModal = () => {
+        setDeleteModalIsOpen(true);
+    }
+    const handleCloseDeleteModal = () => setDeleteModalIsOpen(false);
+
+    const confirmButtonConfig = {
+        buttonName: "Confirm",
+        borderRadius: "5px",
+        fontColor: "white",
+        onClick: onDelete
+    }
+
+    const kebabMenuConfig = {
+        items: [
+            {label: "Update", action: onUpdate, hasPermission: hasPermission("UPDATE_TEST_CASES")},
+            {label: "Delete", action: handleOpenDeleteModal, hasPermission: hasPermission("DELETE_TEST_CASES")}
+        ]
+    };
+
     return (
         <StyledTestCaseContainer>
             <h3>ID: {testCase.id}</h3>
             <h3>Title: {testCase.title}</h3>
             <Button buttonConfig={buttonConfig}/>
+            <KebabMenu config={kebabMenuConfig} />
             <Modal isOpen={modalIsOpen} closeModal={handleCloseTestCase}>
                 <h3>Test data:</h3>
                 {
@@ -65,6 +91,10 @@ const TestCase = ({testCase}) => {
                 {
                     expectedResult.map((er, index) => <StyledStepContainer key={index}>{index + 1}. {er.step}</StyledStepContainer>)
                 }
+            </Modal>
+            <Modal isOpen={deleteModalIsOpen} closeModal={handleCloseDeleteModal}>
+                <p>Confirm delete test-case?</p>
+                <Button buttonConfig={confirmButtonConfig} />
             </Modal>
         </StyledTestCaseContainer>
     )

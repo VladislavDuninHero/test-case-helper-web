@@ -13,6 +13,7 @@ import TestCase from './components/cases/TestCase.jsx';
 import CreateTestCasePage from './components/cases/CreateTestCasePage.jsx';
 import CreateTestSuitePage from './components/suites/CreateTestSuitePage.jsx';
 import UpdateTestSuitePage from './components/suites/UpdateTestSuitePage.jsx';
+import UpdateTestCasePage from './components/cases/UpdateTestCasePage.jsx';
 
 import AuthProvider from './service/auth/AuthProvider.jsx';
 import UpdateProjectPage from './components/projects/UpdateProjectPage.jsx';
@@ -32,6 +33,7 @@ function App() {
           <Route path="/projects/:projectId/:suiteId/update" element={<UpdateTestSuitePage />} />
           <Route path="/projects/:projectId/:suiteId" element={<SuitePage />} />
           <Route path="/projects/:projectId/:suiteId/case/create" element={<CreateTestCasePage />} />
+          <Route path="/projects/:projectId/:suiteId/:caseId/update" element={<UpdateTestCasePage />} />
           <Route path="/projects/:projectId/suites/:suiteId/case/:caseId" element={<TestCase />}/>
           <Route path="*" element={<NotFound />} />
         </Routes>

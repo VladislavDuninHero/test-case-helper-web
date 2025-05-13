@@ -63,7 +63,9 @@ const CreateProjectPage = () => {
             setResponse(res.data);
             setCreateProjectRequestStatus(res.status);
         })
-        .catch(err => setCreateProjectRequestStatus(err.status));
+        .catch(err => {
+            setCreateProjectRequestStatus(err.status);
+        });
     }
 
     if (createProjectRequestStatus < 300 && createProjectRequestStatus !== null) {
@@ -79,11 +81,12 @@ const CreateProjectPage = () => {
 
     const renderStatus = (createProjectStatus) => {
         if (createProjectStatus >= 300 && createProjectRequestStatus !== null) {
-            return <Notification status={createProjectStatus}/>
+            return <Notification $status={createProjectStatus}/>
         }
         
-        if (createProjectRequestStatus !== null < 300 && createProjectRequestStatus !== null)
-        return <Notification status={createProjectStatus}/>
+        if (createProjectRequestStatus !== null < 300 && createProjectRequestStatus !== null) {
+            return <Notification $status={createProjectStatus}/>
+        }
     }
 
     return (

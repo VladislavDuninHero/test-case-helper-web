@@ -85,6 +85,8 @@ const SuitePage = () => {
     const {setError} = useError();
     const [testSuiteRequestStatus, setTestSuiteRequestStatus] = useState(null);
     const [projectRequestStatus, setProjectRequestStatus] = useState(null);
+    const [actionDeleteStatus, setActionDeleteStatus] = useState(null);
+    const [responseAfterDeleteTestCase, setResponseAfterDeleteTestCase] = useState({});
     const [searchQuery, setSearchQuery] = useState("");
     const navigate = useNavigate();
 
@@ -101,7 +103,7 @@ const SuitePage = () => {
                 setTestSuiteRequestStatus(err.status);
             });
 
-    }, [suiteId]);
+    }, [suiteId, actionDeleteStatus]);
 
     useEffect(() => {
         RequestService.getAuthorizedRequest(`${Routes.PROJECTS_ROUTE}/${projectId}`, token)
@@ -142,6 +144,24 @@ const SuitePage = () => {
         border: "none"
     }
 
+    const deleteTestCase = (testCase) => {
+                
+            RequestService.deleteAuthorizedRequest(`${Routes.TEST_CASE_ROUTE}/${testCase.id}/delete`, token)
+                .then(res => {
+                    setResponseAfterDeleteTestCase(res.data);
+                    setActionDeleteStatus(res.status);
+                    filteredTestCases = filteredTestCases.filter(currentTC => currentTC.id !== testCase.id);
+                })
+                .catch(err => {
+                    setActionDeleteStatus(err.status)
+                });
+                    
+        }
+    
+        const navigateToUpdateTestCasePage = (testCase) => {
+            navigate(`${Routes.MAIN_PAGE_ROUTE}/${projectId}/${suiteId}/${testCase.id}/update`);
+        }
+
     return (
         <MainWrapper>
             <LayoutWrapperWithHeader config={mainConfig}>
@@ -161,7 +181,14 @@ const SuitePage = () => {
                         <StyledMainGrid>
                             {
                                 filteredTestCases.length > 0
-                                ? filteredTestCases.map(testCase => <TestCase key={testCase.id} testCase={testCase}/>)
+                                ? filteredTestCases.map(testCase => 
+                                    <TestCase 
+                                        key={testCase.id} 
+                                        testCase={testCase} 
+                                        onDelete={() => deleteTestCase(testCase)}
+                                        onUpdate={() => navigateToUpdateTestCasePage(testCase)}
+                                    />
+                                )
                                 : <div>Test-cases not found</div>
                             }
                         </StyledMainGrid>
