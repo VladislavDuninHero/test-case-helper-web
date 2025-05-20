@@ -13,7 +13,6 @@ const StyledArticle = styled.article`
 `;
 
 const Notification = ({width, height, version, message, $status}) => {
-    console.log($status)
     return (
         <StyledArticle $status={$status}>
             {$status >= 300 ? "failed" : "success"}

@@ -17,20 +17,20 @@ export default class CookieService {
     static setTokenCookie(accessToken) {
         const existingToken = this.getCookie("token");
         
-        if (existingToken === accessToken) return;
+        if (existingToken === accessToken && this.validateExpireDate(existingToken)) return;
 
         if (existingToken !== null && !this.validateExpireDate(existingToken)) {
-            return;
+            this.deleteCookie("token");
         }
 
-        document.cookie = `token=${accessToken}; max-age=${60 * 60 * 1000}`;
+        document.cookie = `token=${accessToken}; max-age=${60 * 60 * 1000}; path=/;`;
     }
 
     static validateExpireDate(token) {
         const decoded = jwtDecode(token);
         const currentTime = Date.now() / 1000;
         
-        return decoded.exp < currentTime;
+        return decoded.exp > currentTime;
     }
 
     static deleteCookie(name) {

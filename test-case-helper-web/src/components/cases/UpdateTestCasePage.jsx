@@ -101,8 +101,6 @@ const CreateTestCasePage = () => {
     useEffect(() => {
             RequestService.getAuthorizedRequest(`${Routes.TEST_CASE_ROUTE}/${caseId}`, token)
                 .then(res => {
-                    console.log(res.data);
-                    
                     testCase.title = res.data.title || "";
                     setTestingDataField(res.data.testCaseData);
                     setPreconditionField(res.data.preconditions);

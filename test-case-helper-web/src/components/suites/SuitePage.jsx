@@ -14,6 +14,7 @@ import { Routes } from '../../constants/Route';
 import styled from 'styled-components';
 import TestCase from '../cases/TestCase';
 import Loader from '../ui/Loader';
+import PaginationPanel from '../pagination/PaginationPanel';
 
 const StyledMainGrid = styled.section`
     min-width: 90%;
@@ -22,6 +23,7 @@ const StyledMainGrid = styled.section`
     gap: 10px;
     align-items: stretch;
     justify-items: center;
+    margin-bottom: 10px;
 `;
 
 const StyledTestSuiteContainer = styled.div`
@@ -78,6 +80,10 @@ const SuitePage = () => {
     const {suiteId} = useParams();
     const {projectId} = useParams();
 
+    const [page, setPage] = useState(0);
+    const [size, setSize] = useState(50);
+    const [totalEl, setTotalEl] = useState(0);
+
     const [loading, setLoading] = useState(true);
     const [projectLoading, setProjectLoading] = useState(true);
     const [testSuite, setTestSuite] = useState({});
@@ -93,17 +99,18 @@ const SuitePage = () => {
     const token = CookieService.getCookie("token");
 
     useEffect(() => {
-        RequestService.getAuthorizedRequest(`${Routes.TEST_SUITE_ROUTE}/${suiteId}`, token)
+        RequestService.getAuthorizedRequest(`${Routes.TEST_SUITE_ROUTE}/${suiteId}`, token, page, size)
             .then(res => {
                 setTestSuite(res.data);
                 setTestSuiteRequestStatus(res.status);
+                setTotalEl(res.data.numberOfTestCases);
                 setLoading(false);
             })
             .catch(err => {
                 setTestSuiteRequestStatus(err.status);
             });
 
-    }, [suiteId, actionDeleteStatus]);
+    }, [suiteId, actionDeleteStatus, page, size]);
 
     useEffect(() => {
         RequestService.getAuthorizedRequest(`${Routes.PROJECTS_ROUTE}/${projectId}`, token)
@@ -116,6 +123,10 @@ const SuitePage = () => {
                 setProjectRequestStatus(err.status)
             });
     }, [testSuite]);
+
+    const handleChangePage = (newPage) => {
+        setPage(newPage);
+    }
 
     if (testSuiteRequestStatus === 401 || projectRequestStatus === 401) {
         setError(true);   
@@ -174,7 +185,7 @@ const SuitePage = () => {
                         <StyledProjectInformationSection>
                             <StyledInfoArticle><h3>Project:</h3> {project.title}</StyledInfoArticle>
                             <StyledInfoArticle><h3>Test-suite:</h3> {testSuite.title}</StyledInfoArticle>
-                            <StyledInfoArticle><h3>Number of test-cases:</h3> {testCases.length}</StyledInfoArticle>
+                            <StyledInfoArticle><h3>Number of test-cases:</h3> {totalEl}</StyledInfoArticle>
                         </StyledProjectInformationSection>
                     </StyledControllerSection>
                     <StyledSectionsWrapper>
@@ -192,6 +203,10 @@ const SuitePage = () => {
                                 : <div>Test-cases not found</div>
                             }
                         </StyledMainGrid>
+                        {   totalEl > 0
+                            ? <PaginationPanel onPageChange={handleChangePage} pageSize={size} totalElements={totalEl} currentPage={page} />
+                            : ""
+                        }
                     </StyledSectionsWrapper>
                 </StyledTestSuiteContainer>
             </LayoutWrapperWithHeader>

@@ -21,6 +21,8 @@ const StyledButton = styled.button`
 
   &:hover {
       background-color: ${(props) => (props.$backGroundHoverColor ? props.$backGroundHoverColor : "#1768c4")};
+      color: ${(props) => (props.$backGroundHoverFontColor ? props.$backGroundHoverFontColor : "white")};
+      border: ${(props) => (props.$border ? props.$border : "")};
   }
 
   &:active {
@@ -31,7 +33,7 @@ const StyledButton = styled.button`
 const Button = ({buttonConfig}) => {
   return (
     <StyledButton 
-      onClick={buttonConfig.onClick} 
+      onClick={buttonConfig.disabled ? null : buttonConfig.onClick} 
       $borderRadius={buttonConfig.borderRadius}
       $minWidth={buttonConfig.minWidth}
       $maxHeight={buttonConfig.maxHeight}
@@ -43,6 +45,8 @@ const Button = ({buttonConfig}) => {
       $backGroundColor={buttonConfig.backGroundColor}
       $marginTop={buttonConfig.marginTop}
       $backGroundHoverColor={buttonConfig.backGroundHoverColor}
+      $backGroundHoverFontColor={buttonConfig.backGroundHoverFontColor}
+      $disabled={buttonConfig.disabled}
     >
       {buttonConfig.buttonName}
     </StyledButton>

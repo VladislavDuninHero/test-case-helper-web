@@ -29,8 +29,9 @@ export default class RequestService {
         );
     }
 
-    static getAuthorizedRequest(uri, token) {
+    static getAuthorizedRequest(uri, token, page, size) {
         return axios.get(uri, {
+                params: {page, size},
                 headers: {
                     Authorization: `Bearer ${token}`
                 }

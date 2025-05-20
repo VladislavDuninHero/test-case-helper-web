@@ -13,6 +13,7 @@ import Button from '../ui/Button';
 import TestSuite from '../suites/TestSuite';
 import Input from '../ui/Input';
 import Modal from '../ui/Modal.jsx';
+import Notification from '../notification/Notification.jsx';
 
 import styled from 'styled-components';
 import Loader from '../ui/Loader';
@@ -101,6 +102,10 @@ const StyledParsedExcelContainer = styled.article`
 `;
 
 const StyledAddExcelBackupForm = styled.form`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     min-width: 100%;
 `;
 
@@ -137,6 +142,7 @@ const ProjectPage = () => {
                 setLoading(false);
             })
             .catch(err => {
+                setError(true);
                 setprojectRequestStatus(err.status)
             });
 
@@ -317,6 +323,9 @@ const ProjectPage = () => {
                     <StyledAddExcelBackupForm>
                         <Input margin={"5px 0 5px 0"} type='file' onChange={addExcelFile}/>
                         <Button buttonConfig={convertAndParseExcelBackupButton} />
+                        {
+                            parsedExcelBackupStatus >= 300 ? <Notification $status={parsedExcelBackupStatus} /> : ""
+                        }
                     </StyledAddExcelBackupForm>
                 </StyledParsedExcelContainer>
             </Modal>
