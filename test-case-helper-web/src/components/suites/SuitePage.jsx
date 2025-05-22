@@ -75,6 +75,12 @@ const StyledControllerSection = styled.div`
     flex-direction: column;
 `;
 
+const StyledTestCaseNotFoundArticle = styled.article`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`;
+
 const SuitePage = () => {
     
     const {suiteId} = useParams();
@@ -189,20 +195,24 @@ const SuitePage = () => {
                         </StyledProjectInformationSection>
                     </StyledControllerSection>
                     <StyledSectionsWrapper>
-                        <StyledMainGrid>
-                            {
+                        
+                            {   
                                 filteredTestCases.length > 0
-                                ? filteredTestCases.map(testCase => 
-                                    <TestCase 
-                                        key={testCase.id} 
-                                        testCase={testCase} 
-                                        onDelete={() => deleteTestCase(testCase)}
-                                        onUpdate={() => navigateToUpdateTestCasePage(testCase)}
-                                    />
-                                )
-                                : <div>Test-cases not found</div>
+                                ? <StyledMainGrid>
+                                    {
+                                        filteredTestCases.map(testCase => 
+                                            <TestCase 
+                                                key={testCase.id} 
+                                                testCase={testCase} 
+                                                onDelete={() => deleteTestCase(testCase)}
+                                                onUpdate={() => navigateToUpdateTestCasePage(testCase)}
+                                            />
+                                        )
+                                    }
+                                </StyledMainGrid>
+                                : <StyledTestCaseNotFoundArticle>Test-cases not found</StyledTestCaseNotFoundArticle>
                             }
-                        </StyledMainGrid>
+                        
                         {   totalEl > 0
                             ? <PaginationPanel onPageChange={handleChangePage} pageSize={size} totalElements={totalEl} currentPage={page} />
                             : ""
