@@ -20,6 +20,7 @@ import Loader from '../ui/Loader';
 import Dropdown from '../ui/Dropdown.jsx';
 import { useNavigate, useParams } from 'react-router';
 
+import { FaArrowRightArrowLeft } from "react-icons/fa6";
 
 const StyledMainGrid = styled.section`
     min-width: 90%;
@@ -83,7 +84,7 @@ const StyledArticleConvertControllers = styled.article`
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    align-items: stretch;
+    align-items: center;
     min-width: 100%;
     min-height: 20px;
 `;
@@ -107,6 +108,16 @@ const StyledAddExcelBackupForm = styled.form`
     justify-content: center;
     align-items: center;
     min-width: 100%;
+`;
+
+const StyledConvertIcon = styled(FaArrowRightArrowLeft)`
+    color: #447bba;
+`;
+
+const StyledTestSuiteNotFoundArticle = styled.article`
+    display: flex;
+    justify-content: center;
+    align-items: center;
 `;
 
 const ProjectPage = () => {
@@ -206,12 +217,14 @@ const ProjectPage = () => {
     const convertAndLoadExcelBackupButton = {
         buttonName: "Load excel",
         fontColor: "white",
+        fontSize: "15px",
         onClick: handleLoadExcelBackup
     }
 
     const confirmParsedAddedExcelFileButton = {
         buttonName: "Parse excel",
         fontColor: "white",
+        fontSize: "15px",
         onClick: handleOpenAddExcelFileModal
     }
 
@@ -284,6 +297,7 @@ const ProjectPage = () => {
                             </StyledArticleFilterByTag>
                             <StyledArticleConvertControllers>
                                 <Button buttonConfig={convertAndLoadExcelBackupButton} />
+                                <StyledConvertIcon />
                                 <Button buttonConfig={confirmParsedAddedExcelFileButton} />
                             </StyledArticleConvertControllers>
                         </StyledControllersSection>
@@ -298,10 +312,13 @@ const ProjectPage = () => {
                         </StyledProjectInformationSection>
                     </Side>
                     <StyledSectionsWrapper>
-                        <StyledMainGrid>
-                            {
-                                filteredTestSuites.length > 0 
-                                ? filteredTestSuites.map((testSuite) => 
+                        
+                        {   
+                            
+                            filteredTestSuites.length > 0 
+                            ? <StyledMainGrid>
+                                {
+                                    filteredTestSuites.map((testSuite) => 
                                         <TestSuite 
                                             key={testSuite.id} 
                                             testSuite={testSuite} 
@@ -311,9 +328,12 @@ const ProjectPage = () => {
                                             onUpdate={() => navigateToUpdateTestSuitePage(testSuite)}
                                         />
                                     )
-                                : <div>Test-suites not found</div>
-                            }
-                        </StyledMainGrid>
+                                }
+                            </StyledMainGrid>
+                            : <StyledTestSuiteNotFoundArticle>Test-suites not found</StyledTestSuiteNotFoundArticle>
+                            
+                        }
+                        
                     </StyledSectionsWrapper>
                 </StyledTestSuitesContainer>
             </LayoutWrapperWithHeader>
