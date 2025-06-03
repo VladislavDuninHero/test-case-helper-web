@@ -34,7 +34,7 @@ const StyledBoldTextSpan = styled.span`
 const StyledTitleAttrContainer = styled.div`
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     text-align: center;
 `;
 

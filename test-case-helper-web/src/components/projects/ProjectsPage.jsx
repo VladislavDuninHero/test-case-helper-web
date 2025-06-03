@@ -32,6 +32,12 @@ const StyledButtonControllerContainer = styled.section`
     min-width: 100%;
 `;
 
+const StyledProjectNotFoundArticle = styled.article`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`;
+
 const ProjectsPage = () => {
     
     const [projects, setProjects] = useState([]);
@@ -96,11 +102,11 @@ const ProjectsPage = () => {
                     <StyledButtonControllerContainer>
                         <Button buttonConfig={createProjectButtonConfig} />
                     </StyledButtonControllerContainer>
-                    { projectsLoading ? <Loader /> :
-                        <StyledMainGrid>
+                    { projectsLoading ? <Loader /> :                   
+                        projects.length > 0 
+                        ? <StyledMainGrid>
                             {
-                                projects.length > 0 
-                                ? projects.map((project) => 
+                                projects.map((project) => 
                                     <Project 
                                         key={project.id} 
                                         project={project} 
@@ -108,9 +114,9 @@ const ProjectsPage = () => {
                                         onUpdate={() => navigateToUpdateProjectPage(project)}
                                     />
                                 )
-                                : <div>Projects not found</div>
                             }
                         </StyledMainGrid>
+                        : <StyledProjectNotFoundArticle>Projects not found</StyledProjectNotFoundArticle>
                     }
                 </LayoutWrapperWithHeader>
             </MainWrapper>
