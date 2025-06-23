@@ -15,7 +15,7 @@ const NavigationPanel = () => {
         <StyledNav>
             <NavigationLink link={"/"} linkName={"Home"} />
             <NavigationLink link={"/projects"} linkName={"Projects"}/>
-            <NavigationLink linkName={"FAQ"}/>
+            <NavigationLink link={"/faq"} linkName={"FAQ"}/>
         </StyledNav>
     )
 }

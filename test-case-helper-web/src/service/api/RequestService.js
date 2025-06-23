@@ -66,7 +66,7 @@ export default class RequestService {
         );
     }
 
-    static validateTokenRequest(token) {
+    static validateTokenRequest(uri, token) {
         return this.postRequest(uri, {token: token});
     }
 }
