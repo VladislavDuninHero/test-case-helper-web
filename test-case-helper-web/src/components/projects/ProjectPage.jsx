@@ -125,6 +125,9 @@ const ProjectPage = () => {
     const [project, setProject] = useState([]);
     const [testSuitesState, setTestSuitesState] = useState([]);
     const [parsedExcelBackupStatus, setParsedExcelBackupStatus] = useState(null);
+    const [loadExcelBackupStatus, setLoadExcelBackupStatus] = useState(null);
+    const [loadExcelBackupLoading, setLoadExcelBackupLoading] = useState(false);
+    const [parsedExcelBackupLoading, setParsedExcelBackupLoading] = useState(false);
     const [projectRequestStatus, setprojectRequestStatus] = useState(null);
     const [deleteTestSuiteStatus, setDeleteTestSuiteStatus] = useState(null);
     const {projectId} = useParams();
@@ -139,7 +142,10 @@ const ProjectPage = () => {
     const handleOpenAddExcelFileModal = () => {
         setaddExcelFileModalIsOpen(true);
     }
-    const handleCloseAddExcelFileModal = () => setaddExcelFileModalIsOpen(false);
+    const handleCloseAddExcelFileModal = () => {
+        setaddExcelFileModalIsOpen(false);
+        setParsedExcelBackupStatus(null);
+    };
     const addExcelFile = (e) => setExcelFile(e.target.files[0]);
 
     const token = CookieService.getCookie("token");
@@ -172,6 +178,8 @@ const ProjectPage = () => {
     }
 
     const handleLoadExcelBackup = () => {
+        setLoadExcelBackupLoading(true);
+
         RequestService.getAuthorizedRequestWithBlob(`${Routes.LOAD_EXCEL_BACKUP_ROUTE}?projectId=${projectId}`, token)
             .then(res => {
                 const url = window.URL.createObjectURL(new Blob([res.data]));
@@ -181,9 +189,13 @@ const ProjectPage = () => {
                 document.body.appendChild(link);
                 link.click();
                 link.remove();
+                setLoadExcelBackupStatus(res.status);
+                setLoadExcelBackupLoading(false);
             })
             .catch(err => {
                 console.log(err);
+                setLoadExcelBackupStatus(err.status);
+                setLoadExcelBackupLoading(false);
             });
     }
 
@@ -195,15 +207,19 @@ const ProjectPage = () => {
         formData.append("excelFile", excelFile);
         formData.append("projectId", projectId);
 
+        setParsedExcelBackupLoading(true);
+
         RequestService.postAuthorizedRequestWithMultipartData(Routes.LOAD_EXCEL_BACKUP_ROUTE, formData, token)
             .then(res => {
                 setTestSuitesState(res.data.testSuites);
                 setParsedExcelBackupStatus(res.status);
+                setParsedExcelBackupLoading(false);
                 setaddExcelFileModalIsOpen(false);
                 setLoading(false);
             })
             .catch(err => {
                 setParsedExcelBackupStatus(err.status);
+                setParsedExcelBackupLoading(false)
             });
     }
 
@@ -218,6 +234,8 @@ const ProjectPage = () => {
         buttonName: "Load excel",
         fontColor: "white",
         fontSize: "15px",
+        disabled: loadExcelBackupLoading !== false,
+        isLoading: loadExcelBackupLoading !== false,
         onClick: handleLoadExcelBackup
     }
 
@@ -232,6 +250,8 @@ const ProjectPage = () => {
         buttonName: "Confirm parsed",
         fontColor: "white",
         minWidth: "100%",
+        disabled: parsedExcelBackupLoading !== false,
+        isLoading: parsedExcelBackupLoading !== false,
         onClick: handleParseExcelBackup
     }
     

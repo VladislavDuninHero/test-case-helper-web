@@ -6,8 +6,8 @@ const StyledSpinner = styled.div`
     border: 4px solid rgba(0, 0, 0, 0.1);
     border-radius: 50%;
     border-top: 4px solid #3498db;
-    width: 40px;
-    height: 40px;
+    width: ${(props) => (props.$width ? props.$width : "40px")};
+    height: ${(props) => (props.$height ? props.$height : "40px")};;
     animation: spin 1s linear infinite;
     margin: 20px auto;
 
@@ -17,9 +17,12 @@ const StyledSpinner = styled.div`
     }
 `;
 
-const Loader = () => {
+const Loader = ({width, height}) => {
     return (
-        <StyledSpinner />
+        <StyledSpinner
+            $width={width}
+            $height={height}
+        />
     )
 }
 

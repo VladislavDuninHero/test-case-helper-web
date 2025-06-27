@@ -1,6 +1,7 @@
 import React from 'react'
 
 import styled from 'styled-components'
+import Loader from "./Loader.jsx";
 
 const StyledButton = styled.button`
   display: flex;
@@ -18,15 +19,21 @@ const StyledButton = styled.button`
   font-size: ${(props) => (props.$fontSize ? props.$fontSize : "16px")};
   cursor: pointer;
   transition: all ease 0.2s;
+  position: relative;
 
   &:hover {
-      background-color: ${(props) => (props.$backGroundHoverColor ? props.$backGroundHoverColor : "#1768c4")};
-      color: ${(props) => (props.$backGroundHoverFontColor ? props.$backGroundHoverFontColor : "white")};
-      border: ${(props) => (props.$border ? props.$border : "")};
+        background-color: ${(props) => (props.$backGroundHoverColor ? props.$backGroundHoverColor : "#1768c4")};
+        color: ${(props) => (props.$backGroundHoverFontColor ? props.$backGroundHoverFontColor : "white")};
+        border: ${(props) => (props.$border ? props.$border : "")};
   }
 
   &:active {
       transform: scale(0.98);
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
   }
 `;
 
@@ -47,6 +54,7 @@ const Button = ({buttonConfig}) => {
       $backGroundHoverColor={buttonConfig.backGroundHoverColor}
       $backGroundHoverFontColor={buttonConfig.backGroundHoverFontColor}
       $disabled={buttonConfig.disabled}
+      disabled={buttonConfig.disabled}
     >
       {buttonConfig.buttonName}
     </StyledButton>
