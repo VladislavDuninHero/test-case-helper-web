@@ -62,6 +62,24 @@ const StyledInfoArticle = styled.article`
     justify-content: center;
     align-items: center;
     margin-right: 15px;
+    border-radius: 5px;
+    padding: 5px;
+    border: 1px solid rgba(68 123 186 / 10%);
+    background-color: rgba(68 123 186 / 10%);
+`;
+
+const StyledTextSpan = styled.span`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 15px;
+    margin-right: 5px;
+`;
+
+const StyledBoldTextSpan = styled.span`
+    font-weight: bold;
+    text-align: start;
+    color: #447bba;
 `;
 
 const StyledArticleFilterByTag = styled.article`
@@ -113,6 +131,9 @@ const SuitePage = () => {
                 setLoading(false);
             })
             .catch(err => {
+                if (err.response?.status === 401) {
+                    setError(true);
+                }
                 setTestSuiteRequestStatus(err.status);
             });
 
@@ -126,16 +147,15 @@ const SuitePage = () => {
                 setProjectLoading(false);
             })
             .catch(err => {
+                if (err.response?.status === 401) {
+                    setError(true);
+                }
                 setProjectRequestStatus(err.status)
             });
     }, [testSuite]);
 
     const handleChangePage = (newPage) => {
         setPage(newPage);
-    }
-
-    if (testSuiteRequestStatus === 401 || projectRequestStatus === 401) {
-        setError(true);   
     }
 
     if (loading) {
@@ -186,12 +206,26 @@ const SuitePage = () => {
                     <StyledControllerSection>
                         <StyledControllersSection>
                             <Button buttonConfig={createTestCaseButtonConfig}/>
-                            <Input placeholder={"Search test-case"} onChange={onChangeSearch} value={searchQuery} minWidthPercent={"0"}/>
+                            <Input
+                                placeholder={"Search test-case"}
+                                onChange={onChangeSearch}
+                                value={searchQuery}
+                                minWidthPercent={"0"}
+                            />
                         </StyledControllersSection>
                         <StyledProjectInformationSection>
-                            <StyledInfoArticle><h3>Project:</h3> {project.title}</StyledInfoArticle>
-                            <StyledInfoArticle><h3>Test-suite:</h3> {testSuite.title}</StyledInfoArticle>
-                            <StyledInfoArticle><h3>Number of test-cases:</h3> {totalEl}</StyledInfoArticle>
+                            <StyledInfoArticle>
+                                <StyledTextSpan>Project:</StyledTextSpan>
+                                <StyledBoldTextSpan>{project.title}</StyledBoldTextSpan>
+                            </StyledInfoArticle>
+                            <StyledInfoArticle>
+                                <StyledTextSpan>Test-suite:</StyledTextSpan>
+                                <StyledBoldTextSpan>{testSuite.title}</StyledBoldTextSpan>
+                            </StyledInfoArticle>
+                            <StyledInfoArticle>
+                                <StyledTextSpan>Number of test-cases:</StyledTextSpan>
+                                <StyledBoldTextSpan>{totalEl}</StyledBoldTextSpan>
+                            </StyledInfoArticle>
                         </StyledProjectInformationSection>
                     </StyledControllerSection>
                     <StyledSectionsWrapper>

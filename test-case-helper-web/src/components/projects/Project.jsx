@@ -15,7 +15,6 @@ const StyledProjectContainer = styled.article`
     flex-direction: column;
     align-items: flex-start;
     justify-content: space-between;
-    border: 1px solid #8f8d8dad;
     border-radius: 5px;
     padding: 5px;
     min-height: 100%;

@@ -9,7 +9,6 @@ const StyledMain = styled.main`
     justify-content: ${({$mainPosition}) => ($mainPosition ? $mainPosition : "flex-start")};
     border: ${(props) => (props.$border ? props.$border : "none")};
     margin: 5px;
-    padding: 5px;
     border-radius: 5px;
 `;
 

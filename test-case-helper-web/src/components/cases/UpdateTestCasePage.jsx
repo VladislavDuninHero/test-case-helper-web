@@ -14,6 +14,7 @@ import { Routes } from '../../constants/Route';
 import styled from 'styled-components';
 import { useParams } from 'react-router';
 import { Navigate } from 'react-router';
+import {useError} from "../hooks/UseErrorHandler.jsx";
 
 const StyledCreateTestCaseForm = styled.form`
     display: flex;
@@ -88,6 +89,7 @@ const CreateTestCasePage = () => {
     const [stepField, setStepField] = useState([]);
     const [erField, setErField] = useState([]);
     const [defaultRequestStatus, setDefaultRequestStatus] = useState(null);
+    const {setError} = useError();
 
     const handleChange = (field) => (event) => {
         setTestCase({
@@ -110,6 +112,9 @@ const CreateTestCasePage = () => {
                     setDefaultRequestStatus(res.status);
                 })
                 .catch(err => {
+                    if (err.response?.status === 401) {
+                        setError(true);
+                    }
                     setDefaultRequestStatus(err.status);
                 });
         }, []);

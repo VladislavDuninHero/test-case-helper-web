@@ -54,6 +54,7 @@ const StyledControllersSection = styled.section`
     justify-content: center;
     justify-items: stretch;
     padding: 5px;
+    border-bottom: 1px solid #8f8d8dad;
 `;
 
 const StyledProjectInformationSection = styled.section`
@@ -62,15 +63,25 @@ const StyledProjectInformationSection = styled.section`
     justify-content: center;
     align-items: flex-start;
     min-width: 100%;
-    border-top: 1px solid #8f8d8dad;
     padding: 5px;
+    font-family: 'Inter', sans-serif;
+`;
+
+const StyledInfoTitle = styled.h2`
+    color: #447bba;
+    font-size: 20px;
 `;
 
 const StyledInfoArticle = styled.article`
     display: flex;
+    flex-direction: column;
     justify-content: flex-start;
-    align-items: center;
+    align-items: flex-start;
+    padding: 5px;
     min-width: 100%;
+    border-radius: 5px;
+    background-color: rgba(68 123 186 / 10%);
+    border: 1px solid rgba(68 123 186 / 10%);
 `;
 
 const StyledArticleFilterByTag = styled.article`
@@ -92,6 +103,14 @@ const StyledArticleConvertControllers = styled.article`
 const StyledBoldTextSpan = styled.span`
     font-weight: bold;
     text-align: start;
+    color: #447bba;
+`;
+
+const StyleTextSpan = styled.span`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 15px;
 `;
 
 const StyledParsedExcelContainer = styled.article`
@@ -322,12 +341,14 @@ const ProjectPage = () => {
                             </StyledArticleConvertControllers>
                         </StyledControllersSection>
                         <StyledProjectInformationSection>
-                            <h2>Info:</h2>
+                            <StyledInfoTitle>Info:</StyledInfoTitle>
                             <StyledInfoArticle>
-                                Project: <StyledBoldTextSpan>{project.title}</StyledBoldTextSpan>
+                                <StyleTextSpan>Project:</StyleTextSpan>
+                                <StyledBoldTextSpan>{project.title}</StyledBoldTextSpan>
                             </StyledInfoArticle>
                             <StyledInfoArticle>
-                                Number of test-suites: <StyledBoldTextSpan>{project.testSuites.length}</StyledBoldTextSpan>
+                                <StyleTextSpan>Count of test-suites:</StyleTextSpan>
+                                <StyledBoldTextSpan>{project.testSuites.length}</StyledBoldTextSpan>
                             </StyledInfoArticle>
                         </StyledProjectInformationSection>
                     </Side>

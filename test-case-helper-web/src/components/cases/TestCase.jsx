@@ -13,7 +13,6 @@ const StyledTestCaseContainer = styled.article`
     flex-direction: column;
     justify-content: space-between;
     align-items: stretch;
-    border: 1px solid #8f8d8dad;
     border-radius: 5px;
     padding: 5px;
     min-width: 100%;
@@ -23,6 +22,15 @@ const StyledTestCaseContainer = styled.article`
 
 const StyledStepContainer = styled.p`
     display: flex;
+`;
+
+const StyledTestCaseInfoInModal = styled.article`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    border-bottom: 1px solid #8f8d8dad;
+    margin-bottom: 10px;
 `;
 
 const TestCase = ({testCase, onDelete, onUpdate}) => {
@@ -75,6 +83,10 @@ const TestCase = ({testCase, onDelete, onUpdate}) => {
             <Button buttonConfig={buttonConfig}/>
             <KebabMenu config={kebabMenuConfig} />
             <Modal isOpen={modalIsOpen} closeModal={handleCloseTestCase}>
+                <StyledTestCaseInfoInModal>
+                    <h3>ID: {testCase.id}</h3>
+                    <h3>Title: {testCase.title}</h3>
+                </StyledTestCaseInfoInModal>
                 <h3>Test data:</h3>
                 {
                     testCaseData.map((data, index) => <StyledStepContainer key={index}>{index + 1}. {data.step}</StyledStepContainer>)
