@@ -23,31 +23,44 @@ const StyledTestSuiteArticle = styled.article`
     min-width: 100%;
     text-align: center;
     background-color: #ffffff;
+    gap: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    
+    > * {
+        min-width: 0;
+    }
 `;
 
 const StyledBoldTextSpan = styled.span`
     font-weight: bold;
     text-align: start;
+    flex-shrink: 0;
+`;
+
+const StyledFieldSpan = styled.span`
+    margin-right: 5px;
 `;
 
 const StyledTitleAttrContainer = styled.div`
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: flex-start;
     text-align: center;
+    min-width: 90%;
 `;
 
 const StyledDescriptionAttrContainer = styled.div`
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: flex-start;
     text-align: center;
+    min-width: 90%;
 `;
 
 const StyledTagAttrContainer = styled.div`
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     text-align: center;
 `;
@@ -59,6 +72,13 @@ const StyledButtonWrapper = styled.div`
     min-width: 100%;
 `;
 
+const StyledBottomElementWrapper = styled.article`
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 100%;
+`;
+
 const TestSuite = ({testSuite, loading, projectId, onUpdate, onDelete}) => {
 
     const {hasPermission, userData} = useAuth();
@@ -66,7 +86,7 @@ const TestSuite = ({testSuite, loading, projectId, onUpdate, onDelete}) => {
     const navigate = useNavigate();
 
     const handleOpenTestSuite = (e) => {
-        const testSuiteId = e.currentTarget.parentElement.parentElement.dataset.testsuiteid;
+        const testSuiteId = e.currentTarget.parentElement.parentElement.parentElement.dataset.testsuiteid;
         
         navigate(`/projects/${projectId}/${testSuiteId}`);
     }
@@ -108,17 +128,22 @@ const TestSuite = ({testSuite, loading, projectId, onUpdate, onDelete}) => {
                 <StyledTestSuiteArticle data-testsuiteid={testSuite.id}>
                     <KebabMenu config={kebabMenuConfig} />
                     <StyledTitleAttrContainer>
-                        Title: <StyledBoldTextSpan>{testSuite.title}</StyledBoldTextSpan>
+                        <StyledFieldSpan>Title:</StyledFieldSpan>
+                        <StyledBoldTextSpan>{testSuite.title}</StyledBoldTextSpan>
                     </StyledTitleAttrContainer>
                     <StyledDescriptionAttrContainer>
-                        Description: <StyledBoldTextSpan>{testSuite.description}</StyledBoldTextSpan>
+                        <StyledFieldSpan>Description:</StyledFieldSpan>
+                        <StyledBoldTextSpan>{testSuite.description}</StyledBoldTextSpan>
                     </StyledDescriptionAttrContainer>
-                    <StyledTagAttrContainer>
-                        Tag: <StyledBoldTextSpan>{testSuite.tag}</StyledBoldTextSpan>
-                    </StyledTagAttrContainer>
-                    <StyledButtonWrapper>
-                        <Button buttonConfig={openTestSuiteButtonConfig}/>
-                    </StyledButtonWrapper>
+                    <StyledBottomElementWrapper>
+                        <StyledTagAttrContainer>
+                            <StyledFieldSpan>Tag:</StyledFieldSpan>
+                            <StyledBoldTextSpan>{testSuite.tag}</StyledBoldTextSpan>
+                        </StyledTagAttrContainer>
+                        <StyledButtonWrapper>
+                            <Button buttonConfig={openTestSuiteButtonConfig}/>
+                        </StyledButtonWrapper>
+                    </StyledBottomElementWrapper>
                     <Modal isOpen={deleteModalIsOpen} closeModal={handleCloseDeleteModal}>
                         <p>Confirm delete test-suite?</p>
                         <Button buttonConfig={confirmButtonConfig} />

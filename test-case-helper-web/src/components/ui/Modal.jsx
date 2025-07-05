@@ -25,7 +25,7 @@ const StyledModalBody = styled.div`
     padding: 20px;
     border-radius: 8px;
     max-width: ${(props) => (props.$maxWidth ? props.$maxWidth : "700px")};
-    max-height: ${(props) => (props.$maxHeight ? props.$maxHeight : "500px")};
+    max-height: ${(props) => (props.$maxHeight ? props.$maxHeight : "600px")};
     width: 100%;
     position: relative;
     overflow-y: auto;
