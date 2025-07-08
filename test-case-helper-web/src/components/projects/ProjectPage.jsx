@@ -149,6 +149,7 @@ const ProjectPage = () => {
     const [parsedExcelBackupLoading, setParsedExcelBackupLoading] = useState(false);
     const [projectRequestStatus, setprojectRequestStatus] = useState(null);
     const [deleteTestSuiteStatus, setDeleteTestSuiteStatus] = useState(null);
+    const [deleteTestSuiteIsLoading, setDeleteTestSuiteIsLoading] = useState(false);
     const {projectId} = useParams();
     const [loading, setLoading] = useState(true);
     const {setError} = useError();
@@ -182,7 +183,7 @@ const ProjectPage = () => {
                 setprojectRequestStatus(err.status)
             });
 
-    }, [projectId]);
+    }, [projectId, parsedExcelBackupStatus]);
 
     if (loading) {
         return <Loader />;
@@ -297,15 +298,19 @@ const ProjectPage = () => {
     })
     
     const deleteTestSuite = (testSuite) => {
-        
+        setDeleteTestSuiteIsLoading(true);
+
         RequestService.deleteAuthorizedRequest(`${Routes.SUITE_ROUTE}/${testSuite.id}/delete`, token)
             .then(res => {
                 setDeleteTestSuiteStatus(res.status);
             
                 setTestSuitesState(suites => suites.filter(suite => suite.id !== testSuite.id));
+
+                setDeleteTestSuiteIsLoading(false);
             })
             .catch(err => {
                 setDeleteTestSuiteStatus(err.status);
+                setDeleteTestSuiteIsLoading(false);
             });
                     
     }
@@ -364,7 +369,8 @@ const ProjectPage = () => {
                                             key={testSuite.id} 
                                             testSuite={testSuite} 
                                             loading={loading} 
-                                            projectId={projectId} 
+                                            projectId={projectId}
+                                            deleteTestSuiteIsLoading={deleteTestSuiteIsLoading}
                                             onDelete={() => deleteTestSuite(testSuite)}
                                             onUpdate={() => navigateToUpdateTestSuitePage(testSuite)}
                                         />
@@ -379,7 +385,7 @@ const ProjectPage = () => {
                 </StyledTestSuitesContainer>
             </LayoutWrapperWithHeader>
             <Modal isOpen={addExcelFileModalIsOpen} closeModal={handleCloseAddExcelFileModal}>
-                <p>Add excel file to backup: </p>
+                <p>Add excel file to load backup on this project: </p>
                 <StyledParsedExcelContainer>
                     <StyledAddExcelBackupForm>
                         <Input margin={"5px 0 5px 0"} type='file' onChange={addExcelFile}/>

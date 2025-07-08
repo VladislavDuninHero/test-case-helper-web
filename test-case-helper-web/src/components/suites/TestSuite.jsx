@@ -79,7 +79,7 @@ const StyledBottomElementWrapper = styled.article`
     min-width: 100%;
 `;
 
-const TestSuite = ({testSuite, loading, projectId, onUpdate, onDelete}) => {
+const TestSuite = ({testSuite, loading, projectId, deleteTestSuiteIsLoading, onUpdate, onDelete}) => {
 
     const {hasPermission, userData} = useAuth();
     const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
@@ -115,6 +115,8 @@ const TestSuite = ({testSuite, loading, projectId, onUpdate, onDelete}) => {
         buttonName: "Confirm",
         borderRadius: "5px",
         fontColor: "white",
+        disabled: deleteTestSuiteIsLoading !== false,
+        isLoading: deleteTestSuiteIsLoading !== false,
         onClick: onDelete
     }
 
