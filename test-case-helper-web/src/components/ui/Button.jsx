@@ -14,9 +14,10 @@ const StyledButton = styled.button`
   margin-left: ${(props) => (props.$marginLeft ? props.$marginLeft : "")};
   margin-top: ${(props) => (props.$marginTop ? props.$marginTop : "")};
   padding: ${(props) => (props.$padding ? props.$padding : "5px")};
-  background-color: ${(props) => (props.$backGroundColor ? props.$backGroundColor : "#447bba")};
+  background-color: ${(props) => (props.$backgroundColor ? props.$backgroundColor : "#447bba")};
   color: ${(props) => (props.$fontColor ? props.$fontColor : "")};
   font-size: ${(props) => (props.$fontSize ? props.$fontSize : "16px")};
+  background: ${(props) => (props.$background ? props.$background : "")};
   cursor: pointer;
   transition: all ease 0.2s;
   position: relative;
@@ -49,11 +50,12 @@ const Button = ({buttonConfig}) => {
       $border={buttonConfig.border}
       $fontSize={buttonConfig.fontSize}
       $padding={buttonConfig.padding}
-      $backGroundColor={buttonConfig.backGroundColor}
+      $backgroundColor={buttonConfig.backgroundColor}
       $marginTop={buttonConfig.marginTop}
       $backGroundHoverColor={buttonConfig.backGroundHoverColor}
       $backGroundHoverFontColor={buttonConfig.backGroundHoverFontColor}
       $disabled={buttonConfig.disabled}
+      $background={buttonConfig.background}
       disabled={buttonConfig.disabled}
     >
       {buttonConfig.buttonName}

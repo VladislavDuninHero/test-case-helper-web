@@ -5,13 +5,19 @@ import styled from 'styled-components'
 const StyledSelect = styled.select`
     border-radius: ${(props) => (props.$borderRadius ? props.$borderRadius : "")};
     min-height: 30px;
+    margin-bottom: ${(props) => (props.$marginBottom ? props.$marginBottom : "0")};
     cursor: pointer;
 `;
 
 const Dropdown = ({children, onChange, selectConfig, value}) => {
     
     return (
-        <StyledSelect onChange={onChange} $borderRadius={selectConfig.borderRadius} value={value}>
+        <StyledSelect
+            onChange={onChange}
+            $borderRadius={selectConfig.borderRadius}
+            $marginBottom={selectConfig.marginBottom}
+            value={value}
+        >
             {children}
         </StyledSelect>
     )

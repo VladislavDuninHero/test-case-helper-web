@@ -90,7 +90,7 @@ const Modal = ({isOpen, closeModal, children, maxWidth, maxHeight}) => {
         border: "1px solid #ff0000ab",
         fontColor: "white",
         marginTop: "5px",
-        backGroundColor: "red",
+        backgroundColor: "red",
         backGroundHoverColor: "#ff0000ab",
         margin: "0 5px 0 5px",
         onClick: closeModal

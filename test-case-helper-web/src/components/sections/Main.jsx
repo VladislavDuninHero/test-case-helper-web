@@ -8,7 +8,7 @@ const StyledMain = styled.main`
     align-items: ${({$alignItems}) => ($alignItems ? $alignItems : "center")};
     justify-content: ${({$mainPosition}) => ($mainPosition ? $mainPosition : "flex-start")};
     border: ${(props) => (props.$border ? props.$border : "none")};
-    margin: 5px;
+    margin: ${(props) => props.$margin || "5px"};
     border-radius: 5px;
 `;
 
@@ -19,6 +19,7 @@ const Main = ({children, mainConfig = {}}) => {
             $mainPosition={mainConfig.mainContentPosition}
             $border={mainConfig.border}
             $alignItems={mainConfig.alignItems}
+            $margin={mainConfig.margin}
         >
             {children}
         </StyledMain>

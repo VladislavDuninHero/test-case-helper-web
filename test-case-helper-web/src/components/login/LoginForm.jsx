@@ -52,6 +52,7 @@ const LoginForm = () => {
     const [response, setResponse] = useState({});
     const [showPassword, setShowPassword] = useState(false);
     const {login} = useAuth();
+    const [loginButtonIsDisabled, setLoginButtonIsDisabled] = useState(false);
 
     const handleChange = (field) => (event) => {
         setLoginData({
@@ -74,16 +75,20 @@ const LoginForm = () => {
 
     const handleLogin = (event) => {
         event.preventDefault();
+        setLoginButtonIsDisabled(true);
 
-        const res = RequestService.postRequest(Routes.LOGIN_ROUTE, loginData)
+        RequestService.postRequest(Routes.LOGIN_ROUTE, loginData)
             .then(res => {
                 setLoginStatus(res.status);
                 setRedirect(true);
                 setResponse(res.data);
-                
+                setLoginButtonIsDisabled(false)
                 login(res.data.tokenInfo.accessToken);
             })
-            .catch(err => setLoginStatus(err.status));
+            .catch(err => {
+                setLoginStatus(err.status);
+                setLoginButtonIsDisabled(false);
+            });
         
     };
     
@@ -96,7 +101,8 @@ const LoginForm = () => {
         fontColor: "white",
         borderRadius: "5px",
         minWidth: "100%",
-        border: "1px solid lightblue"
+        border: "1px solid lightblue",
+        disabled: loginButtonIsDisabled
     }
 
     return (

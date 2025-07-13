@@ -92,7 +92,8 @@ const ProjectsPage = () => {
 
     const mainConfig = {
         border: "none",
-        alignItems: "stretch"
+        alignItems: "stretch",
+        margin: "10px"
     }
     
     return (

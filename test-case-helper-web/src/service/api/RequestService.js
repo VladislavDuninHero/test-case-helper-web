@@ -19,6 +19,16 @@ export default class RequestService {
         );
     }
 
+    static postAuthorizedRequestWithParams(uri, body, params, token) {
+        return axios.post(uri, body, {
+                params: params,
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            }
+        );
+    }
+
     static postAuthorizedRequestWithMultipartData(uri, body, token) {
         return axios.post(uri, body, {
                 headers: {

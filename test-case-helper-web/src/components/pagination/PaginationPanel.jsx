@@ -36,7 +36,7 @@ const PaginationPanel = ({ currentPage, pageSize, onPageChange, totalElements })
                         backGroundHoverFontColor: "white",
                         backGroundHoverColor: "orange",
                         border: isActive ? "1px solid orange" : "",
-                        backGroundColor: isActive ? "orange" : ""
+                        backgroundColor: isActive ? "orange" : ""
                     }}
                 />
     }
@@ -65,7 +65,7 @@ const PaginationPanel = ({ currentPage, pageSize, onPageChange, totalElements })
                     disabled: currentPage === 0,
                     fontColor: "black",
                     borderRadius: "5px",
-                    backGroundColor: "unset",
+                    backgroundColor: "unset",
                     backGroundHoverFontColor: "#00000073",
                     backGroundHoverColor: "unset",
                     border: "none"
@@ -80,7 +80,7 @@ const PaginationPanel = ({ currentPage, pageSize, onPageChange, totalElements })
                     onClick: () => onPageChange(currentPage + 1),
                     fontColor: "black",
                     borderRadius: "5px",
-                    backGroundColor: "unset",
+                    backgroundColor: "unset",
                     backGroundHoverFontColor: "#00000073",
                     backGroundHoverColor: "unset",
                     border: "none",

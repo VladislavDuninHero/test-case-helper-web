@@ -77,7 +77,6 @@ const Project = ({project, onDelete, onUpdate}) => {
 
     const buttonConfig = {
         color: "white",
-        backgroundColor: "lightblue",
         minHeight: "5px",
         borderRadius: "5px",
         buttonName: "Open project",

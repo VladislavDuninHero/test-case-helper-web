@@ -1,14 +1,21 @@
-import React, { useState } from 'react'
+import React, {useState} from 'react'
 
 import styled from 'styled-components'
+import {BiSolidRightArrow} from "react-icons/bi";
 
 import Button from '../ui/Button';
 import KebabMenu from '../ui/KebabMenu';
 import Modal from '../ui/Modal';
 
-import { useNavigate } from 'react-router';
+import {useNavigate} from 'react-router';
 
-import { useAuth } from '../../service/auth/AuthProvider';
+import {useAuth} from '../../service/auth/AuthProvider';
+import Dropdown from "../ui/Dropdown.jsx";
+import RequestService from "../../service/api/RequestService.js";
+import {Routes} from "../../constants/Route.js";
+import CookieService from "../../service/cookie/CookieHandlerService.js";
+import Notification from "../notification/Notification.jsx";
+import ActiveTestSuiteRunSession from "./ActiveTestSuiteRunSession.jsx";
 
 const StyledTestSuiteArticle = styled.article`
     position: relative;
@@ -25,7 +32,7 @@ const StyledTestSuiteArticle = styled.article`
     background-color: #ffffff;
     gap: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    
+
     > * {
         min-width: 0;
     }
@@ -34,7 +41,7 @@ const StyledTestSuiteArticle = styled.article`
 const StyledBoldTextSpan = styled.span`
     font-weight: bold;
     text-align: start;
-    flex-shrink: 0;
+    flex: 1;
 `;
 
 const StyledFieldSpan = styled.span`
@@ -68,7 +75,7 @@ const StyledTagAttrContainer = styled.div`
 const StyledButtonWrapper = styled.div`
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-around;
     min-width: 100%;
 `;
 
@@ -79,30 +86,108 @@ const StyledBottomElementWrapper = styled.article`
     min-width: 100%;
 `;
 
-const TestSuite = ({testSuite, loading, projectId, deleteTestSuiteIsLoading, onUpdate, onDelete}) => {
+const StyledParagraph = styled.p`
+    display: flex;
+    justify-content: ${(props) => props.$justifyContent || "center"};
+    align-items: center;
+    margin-bottom: 5px;
+`;
+
+const TestSuite = (
+    {
+        testSuite,
+        loading,
+        projectId,
+        deleteTestSuiteIsLoading,
+        onUpdate,
+        onDelete,
+        onDeleteResponse
+    }
+) => {
 
     const {hasPermission, userData} = useAuth();
     const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
+    const [runTestSuiteModalIsOpen, setRunTestSuiteModalIsOpen] = useState(false);
+    const [env, setEnv] = useState("STG");
+    const [runTestSuiteSessionResponse, setRunTestSuiteSessionResponse] = useState(null);
+    const [runTestSuiteSessionResponseStatus, setRunTestSuiteSessionResponseStatus] = useState(null);
     const navigate = useNavigate();
+
+    const token = CookieService.getCookie("token");
 
     const handleOpenTestSuite = (e) => {
         const testSuiteId = e.currentTarget.parentElement.parentElement.parentElement.dataset.testsuiteid;
-        
+
         navigate(`/projects/${projectId}/${testSuiteId}`);
+    }
+
+    const handleOpenRunTestSuiteModal = () => setRunTestSuiteModalIsOpen(true);
+    const handleCloseRunTestSuiteModal = () => {
+        setRunTestSuiteModalIsOpen(false);
+    }
+
+    const envSelectOnChange = (value) => {
+        setEnv(value)
+    }
+
+
+    const runTestSuiteSession = () => {
+        const testSuiteId = testSuite.id;
+
+        RequestService.postAuthorizedRequestWithParams(
+            `${Routes.SUITE_ROUTE}/${testSuite.id}/run`,
+            "",
+            {env},
+            token
+        )
+            .then(res => {
+                setRunTestSuiteSessionResponseStatus(res.status);
+                setRunTestSuiteSessionResponse(res.data)
+
+                navigate(`/projects/${projectId}/${testSuiteId}/run?sessionId=${res.data.runSessionId}`);
+            })
+            .catch(err => {
+                setRunTestSuiteSessionResponseStatus(err.status);
+            });
     }
 
     const openTestSuiteButtonConfig = {
         buttonName: "Open test-suite",
         borderRadius: "5px",
         fontColor: "white",
-        minWidth: "100%",
+        minWidth: "85%",
         onClick: handleOpenTestSuite
+    }
+    const runTestSuiteButtonConfig = {
+        buttonName: <BiSolidRightArrow/>,
+        borderRadius: "5px",
+        backgroundColor: "white",
+        fontColor: "green",
+        minWidth: "10%",
+        minHeight: "10%",
+        border: "none",
+        background: "none",
+        backGroundHoverColor: "white",
+        backGroundHoverFontColor: "#008000b8",
+        fontSize: "30px",
+        padding: "0",
+        onClick: handleOpenRunTestSuiteModal
+    }
+    const runTestSuiteSessionButtonConfig = {
+        buttonName: "Run test-suite",
+        fontColor: "white",
+        borderRadius: "5px",
+        onClick: runTestSuiteSession,
+        disabled: false,
     }
 
     const handleOpenDeleteModal = () => {
         setDeleteModalIsOpen(true);
+        onDeleteResponse.errors = [];
+        onDeleteResponse.status = null;
     }
     const handleCloseDeleteModal = () => setDeleteModalIsOpen(false);
+
 
     const kebabMenuConfig = {
         items: [
@@ -120,6 +205,12 @@ const TestSuite = ({testSuite, loading, projectId, deleteTestSuiteIsLoading, onU
         onClick: onDelete
     }
 
+    const selectConfig = {
+        buttonName: "Select",
+        borderRadius: "5px",
+        marginBottom: "10px",
+    }
+
     const renderTestSuite = () => {
         if (loading) {
             return <div>Loading...</div>;
@@ -128,7 +219,7 @@ const TestSuite = ({testSuite, loading, projectId, deleteTestSuiteIsLoading, onU
         if (!loading) {
             return (
                 <StyledTestSuiteArticle data-testsuiteid={testSuite.id}>
-                    <KebabMenu config={kebabMenuConfig} />
+                    <KebabMenu config={kebabMenuConfig}/>
                     <StyledTitleAttrContainer>
                         <StyledFieldSpan>Title:</StyledFieldSpan>
                         <StyledBoldTextSpan>{testSuite.title}</StyledBoldTextSpan>
@@ -144,11 +235,37 @@ const TestSuite = ({testSuite, loading, projectId, deleteTestSuiteIsLoading, onU
                         </StyledTagAttrContainer>
                         <StyledButtonWrapper>
                             <Button buttonConfig={openTestSuiteButtonConfig}/>
+                            <Button buttonConfig={runTestSuiteButtonConfig}/>
                         </StyledButtonWrapper>
                     </StyledBottomElementWrapper>
                     <Modal isOpen={deleteModalIsOpen} closeModal={handleCloseDeleteModal}>
                         <p>Confirm delete test-suite?</p>
-                        <Button buttonConfig={confirmButtonConfig} />
+                        <Button buttonConfig={confirmButtonConfig}/>
+                        { onDeleteResponse.errors?.length > 0
+                            ? onDeleteResponse.errors.map((err, index) => (
+                                <Notification $status={400} key={`${err.errorMessage}-${index}`}>
+                                    <span>{err.errorMessage}:</span>
+                                    {err.activeSessions?.map((active, index) => (
+                                                <div key={`${active.testSuiteTitle}-${index}`}>{active.testSuiteTitle}</div>
+                                            )
+                                        )
+                                    }
+                                </Notification>
+                            ))
+                            : ""
+                        }
+                    </Modal>
+                    <Modal isOpen={runTestSuiteModalIsOpen} closeModal={handleCloseRunTestSuiteModal}>
+                        <StyledParagraph>Ready to go run test-suite {testSuite.id}?</StyledParagraph>
+                        <StyledParagraph $justifyContent={"flex-start"}>Please, select the
+                            environment:</StyledParagraph>
+                        <Dropdown selectConfig={selectConfig} onChange={e => envSelectOnChange(e.target.value)}>
+                            <option>STG</option>
+                            <option>QA</option>
+                            <option>TEST</option>
+                            <option>PROD</option>
+                        </Dropdown>
+                        <Button buttonConfig={runTestSuiteSessionButtonConfig}/>
                     </Modal>
                 </StyledTestSuiteArticle>
             );
