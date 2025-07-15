@@ -8,6 +8,7 @@ import { useAuth } from '../../service/auth/AuthProvider';
 
 import styled from 'styled-components';
 import { useNavigate } from 'react-router';
+import Notification from "../notification/Notification.jsx";
 
 const StyledProjectContainer = styled.article`
     position: relative;
@@ -50,7 +51,7 @@ const StyledDescriptionAttrContainer = styled.div`
     text-align: center;
 `;
 
-const Project = ({project, onDelete, onUpdate}) => {
+const Project = ({project, onDelete, onUpdate, onDeleteResponse, deleteProjectIsLoading}) => {
 
     const navigate = useNavigate();
     const [projectActionStatus, setProjectActionStatus] = useState(null);
@@ -66,12 +67,17 @@ const Project = ({project, onDelete, onUpdate}) => {
     const handleOpenDeleteModal = () => {
         setDeleteModalIsOpen(true);
     }
-    const handleCloseDeleteModal = () => setDeleteModalIsOpen(false);
+    const handleCloseDeleteModal = () => {
+        setDeleteModalIsOpen(false);
+        onDeleteResponse.errors = [];
+        onDeleteResponse.status = null;
+    }
 
     const confirmButtonConfig = {
         buttonName: "Confirm",
         borderRadius: "5px",
         fontColor: "white",
+        disabled: deleteProjectIsLoading !== false,
         onClick: onDelete
     }
 
@@ -106,6 +112,19 @@ const Project = ({project, onDelete, onUpdate}) => {
             <Modal isOpen={deleteModalIsOpen} closeModal={handleCloseDeleteModal}>
                 <p>Confirm delete project?</p>
                 <Button buttonConfig={confirmButtonConfig} />
+                { onDeleteResponse.errors?.length > 0
+                    ? onDeleteResponse.errors.map((err, index) => (
+                        <Notification $status={400} key={`${err.errorMessage}-${index}`}>
+                            <span>{err.errorMessage}:</span>
+                            {err.activeSessions?.map((active, index) => (
+                                    <div key={`${active.testSuiteTitle}-${index}`}>{active.testSuiteTitle}</div>
+                                )
+                            )
+                            }
+                        </Notification>
+                    ))
+                    : ""
+                }
             </Modal>
         </StyledProjectContainer>
         </>

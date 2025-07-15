@@ -42,7 +42,10 @@ const ProjectsPage = () => {
     
     const [projects, setProjects] = useState([]);
     const [actionDeleteStatus, setActionDeleteStatus] = useState(null);
-    const [responseAfterDeleteProject, setResponseAfterDeleteProject] = useState({});
+    const [responseAfterDeleteProject, setResponseAfterDeleteProject] = useState({
+        errors: []
+    });
+    const [deleteProjectIsLoading, setDeleteProjectIsLoading] = useState(false);
     const [projectsLoading, setProjectLoading] = useState(true);
     const {setError} = useError();
     const navigate = useNavigate();
@@ -73,15 +76,23 @@ const ProjectsPage = () => {
     }, []);
 
     const deleteProject = (project) => {
-            
+        setDeleteProjectIsLoading(true)
         RequestService.deleteAuthorizedRequest(`${Routes.PROJECTS_ROUTE}/${project.id}/delete`, token)
             .then(res => {
                 setResponseAfterDeleteProject(res.data);
                 setActionDeleteStatus(res.status);
                 setProjects(projects.filter(currentProject => currentProject.id !== project.id));
+                setDeleteProjectIsLoading(false)
             })
             .catch(err => {
                 setActionDeleteStatus(err.status)
+                setResponseAfterDeleteProject(prev =>({
+                        ...prev,
+                        status: err.status,
+                        errors: err.response.data.errors
+                    })
+                )
+                setDeleteProjectIsLoading(false)
             });
                 
     }
@@ -113,6 +124,8 @@ const ProjectsPage = () => {
                                         project={project} 
                                         onDelete={() => deleteProject(project)}
                                         onUpdate={() => navigateToUpdateProjectPage(project)}
+                                        onDeleteResponse={responseAfterDeleteProject}
+                                        deleteProjectIsLoading={deleteProjectIsLoading}
                                     />
                                 )
                             }

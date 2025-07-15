@@ -8,9 +8,10 @@ const StyledCustomOption = styled.div`
     background-color: ${(props) => props.$backgroundColor || ""};
     padding: ${props => props.$padding || "0"};
     cursor: pointer;
-    
+    text-align: center;
+
     &:hover {
-        opacity: 0.7;
+        filter: brightness(0.9);
     }
 `;
 
@@ -25,9 +26,8 @@ const StyledSelectList = styled.div`
     left: 0;
     z-index: 100;
     border: none;
-    border-radius: 4px;
+    border-radius: 5px;
     margin-top: 4px;
-    background: none;
 `;
 
 const StyledSelectedOption = styled.div`
@@ -42,9 +42,10 @@ const StyledSelectedOption = styled.div`
     }
 `;
 
-const CustomSelect = ({options}) => {
-    const [selected, setSelected] = useState("NOT_TESTING");
+const CustomSelect = ({options, value, onChange}) => {
     const [isOpen, setIsOpen] = useState(false);
+
+    const selected = options.find(option => option.value === value) || options[0];
 
     const backgroundColorStatusFactory = (selected) => {
         const statusMap = new Map([
@@ -63,19 +64,19 @@ const CustomSelect = ({options}) => {
     }
 
     const handleSelect = (option) => {
-        setSelected(option);
+        onChange(option);
         setIsOpen(false);
     }
 
     return (
         <StyledSelectContainer>
             <StyledSelectedOption
-                $backgroundColor={backgroundColorStatusFactory(selected)}
+                $backgroundColor={backgroundColorStatusFactory(selected.value)}
                 $padding={"5px"}
                 $borderRadius={"10px"}
                 onClick={handleOpen}
             >
-                {selected}
+                {selected.value}
             </StyledSelectedOption>
             { isOpen && (
                 <StyledSelectList>
@@ -100,4 +101,4 @@ const CustomSelect = ({options}) => {
     );
 };
 
-export default CustomSelect;
+export default React.memo(CustomSelect);

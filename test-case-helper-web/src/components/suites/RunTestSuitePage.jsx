@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 
 import MainWrapper from '../global-wrappers/MainWrapper';
 import LayoutWrapperWithHeader from '../global-wrappers/LayoutWrapperWithHeader';
@@ -20,6 +20,7 @@ import Loader from "../ui/Loader.jsx";
 import RunTestCase from "../cases/RunTestCase.jsx";
 import PaginationPanel from "../pagination/PaginationPanel.jsx";
 import {handleError} from "../../service/error/ErrorHandler.jsx";
+import StatusFactory from "../../service/util/StatusFactory.js";
 
 const StyledRunTestSuiteWrapper = styled.section`
     min-height: 100vh;
@@ -30,7 +31,7 @@ const StyledHeaderSection = styled.section`
     min-width: 100%;
     display: flex;
     align-items: center;
-    justify-items: center;
+    justify-content: space-between;
     border: 1px solid rgba(68 123 186 / 10%);
     background-color: rgba(68 123 186 / 10%);
     font-family: 'Inter',sans-serif;
@@ -50,6 +51,18 @@ const StyledHeaderProjectInfo = styled.article`
     align-items: center;
     padding: 5px;
     border-right: 1px solid rgba(68 123 186 / 10%);
+`;
+
+const StyledHeaderMainContent = styled.article`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`;
+const StyledHeaderMainControllersContent = styled.article`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 `;
 
 const StyledHeaderTestSuiteInfo = styled.article`
@@ -105,15 +118,21 @@ const RunTestSuitePage = () => {
     const [testSuite, setTestSuite] = useState({});
     const [testSuiteRunSessionId, setTestSuiteRunSessionId] = useState(null);
     const [project, setProject] = useState({});
-    const [sessionProgress, setSessionProgress] = useState({
-        passed: 0,
-        failed: 0,
-        blocked: 0,
-        skipped: 0,
-        notTesting: 0
-    });
     const [page, setPage] = useState(0);
     const [size, setSize] = useState(50);
+    const [progress, setProgress] = useState(0);
+
+    const [statistic, setStatistic] = useState({
+        passed: 0,
+        failed: 0,
+        skipped: 0,
+        blocked: 0,
+        notTesting: 0
+    });
+    const [sessionStatistic, setSessionStatistic] = useState([]);
+    const updateSessionStatistic = (statistic) => {
+        setSessionStatistic(statistic);
+    }
 
     const token = CookieService.getCookie("token");
 
@@ -130,12 +149,13 @@ const RunTestSuitePage = () => {
                 }
                 setTestSuiteRequestStatus(err.status);
             });
-    }, [suiteId, projectId]);
+    }, [suiteId, projectId, token, page, size, setError]);
 
     useEffect(() => {
         RequestService.getAuthorizedRequest(`${Routes.TEST_SUITE_ROUTE}/${suiteId}/run?sessionId=${sessionId}`, token, page, size)
             .then(res => {
                 setTestSuiteRunSession(res.data);
+                setSessionStatistic(res.data.sessionStatistic);
                 setTestSuiteRunSessionRequestStatus(res.status);
                 setLoading(false);
             })
@@ -152,7 +172,7 @@ const RunTestSuitePage = () => {
                 setTestSuiteRunSessionRequestStatus(err.status);
             });
 
-    }, [suiteId, projectId, page, size]);
+    }, [suiteId, projectId, page, size, sessionId, token, navigate, setError]);
 
     useEffect(() => {
         RequestService.getAuthorizedRequest(`${Routes.PROJECTS_ROUTE}/${projectId}`, token)
@@ -175,12 +195,70 @@ const RunTestSuitePage = () => {
         mainPosition: "center"
     }
 
-    if (loading) {
-        return <Loader />
-    }
+    const analyzeStatistic = () => {
+        const newStatistic = {
+            passed: 0,
+            failed: 0,
+            skipped: 0,
+            blocked: 0,
+            not_testing: 0
+        }
+
+        sessionStatistic.forEach(data => {
+            const status = data.status.toLowerCase();
+            newStatistic[status] = data.count;
+        })
+
+        setStatistic(newStatistic)
+    };
+
+    useEffect(() => {
+        analyzeStatistic();
+
+        setProgress(testSuite.numberOfTestCases - statistic.not_testing);
+    }, [sessionStatistic, statistic.not_testing]);
+
 
     const handleChangePage = (newPage) => {
         setPage(newPage);
+    }
+
+    const renderStatistic = () => {
+        return(
+            <>
+                <StyledInfoContainer>
+                    <StyledFieldSpan $color={"green"} $marginRight={"5px"}>Passed: </StyledFieldSpan>
+                    <StyledFieldSpan>{statistic.passed}</StyledFieldSpan>
+                </StyledInfoContainer>
+                <StyledInfoContainer>
+                    <StyledFieldSpan $color={"red"} $marginRight={"5px"}>Failed:</StyledFieldSpan>
+                    <StyledFieldSpan>{statistic.failed}</StyledFieldSpan>
+                </StyledInfoContainer>
+                <StyledInfoContainer>
+                    <StyledFieldSpan $color={"crimson"} $marginRight={"5px"}>Blocked:</StyledFieldSpan>
+                    <StyledFieldSpan>{statistic.blocked}</StyledFieldSpan>
+                </StyledInfoContainer>
+                <StyledInfoContainer>
+                    <StyledFieldSpan $color={"blue"} $marginRight={"5px"}>Skipped:</StyledFieldSpan>
+                    <StyledFieldSpan>{statistic.skipped}</StyledFieldSpan>
+                </StyledInfoContainer>
+                <StyledInfoContainer>
+                    <StyledFieldSpan $color={"gray"} $marginRight={"5px"}>Not testing:</StyledFieldSpan>
+                    <StyledFieldSpan>{statistic.not_testing}</StyledFieldSpan>
+                </StyledInfoContainer>
+            </>
+        );
+    }
+
+    const endTestingSessionButtonConfig = {
+        buttonName: "End testing session"
+    }
+    const cancelTestingSessionButtonConfig = {
+        buttonName: "Cancel testing session"
+    }
+
+    if (loading) {
+        return <Loader />
     }
 
     return (
@@ -188,42 +266,33 @@ const RunTestSuitePage = () => {
             <LayoutWrapperWithHeader config={mainConfig}>
                 <StyledRunTestSuiteWrapper>
                     <StyledHeaderSection>
-                        <StyledHeaderProjectInfo>
-                            <StyledFieldSpan $color={"#447bba"} $marginRight={"5px"}>Project:</StyledFieldSpan>
-                            <StyledFieldSpan>{project.title}</StyledFieldSpan>
-                        </StyledHeaderProjectInfo>
-                        <StyledHeaderTestSuiteInfo>
-                            <StyledHeaderTestSuiteInfoField>
-                                <StyledFieldSpan $color={"#447bba"} $marginRight={"5px"}>Test-suite:</StyledFieldSpan>
-                                <StyledFieldSpan>{testSuite.title}</StyledFieldSpan>
-                            </StyledHeaderTestSuiteInfoField>
-                            <StyledHeaderTestSuiteInfoField>
-                                <StyledFieldSpan $color={"#447bba"} $marginRight={"5px"}>Progress:</StyledFieldSpan>
-                                <StyledFieldSpan>0 of {testSuite.numberOfTestCases}</StyledFieldSpan>
-                            </StyledHeaderTestSuiteInfoField>
-                        </StyledHeaderTestSuiteInfo>
-                        <StyledHeaderSessionStatisticGrid>
-                            <StyledInfoContainer>
-                                <StyledFieldSpan $marginRight={"5px"} $color={"green"}>Passed:</StyledFieldSpan>
-                                <StyledFieldSpan>{sessionProgress.passed}</StyledFieldSpan>
-                            </StyledInfoContainer>
-                            <StyledInfoContainer>
-                                <StyledFieldSpan $marginRight={"5px"} $color={"red"}>Failed:</StyledFieldSpan>
-                                <StyledFieldSpan>{sessionProgress.failed}</StyledFieldSpan>
-                            </StyledInfoContainer>
-                            <StyledInfoContainer>
-                                <StyledFieldSpan $marginRight={"5px"} $color={"crimson"}>Blocked:</StyledFieldSpan>
-                                <StyledFieldSpan>{sessionProgress.blocked}</StyledFieldSpan>
-                            </StyledInfoContainer>
-                            <StyledInfoContainer>
-                                <StyledFieldSpan $marginRight={"5px"} $color={"blue"}>Skipped:</StyledFieldSpan>
-                                <StyledFieldSpan>{sessionProgress.skipped}</StyledFieldSpan>
-                            </StyledInfoContainer>
-                            <StyledInfoContainer>
-                                <StyledFieldSpan $marginRight={"5px"} $color={"gray"}>Not testing:</StyledFieldSpan>
-                                <StyledFieldSpan>{sessionProgress.notTesting}</StyledFieldSpan>
-                            </StyledInfoContainer>
-                        </StyledHeaderSessionStatisticGrid>
+                        <StyledHeaderMainContent>
+                            <StyledHeaderProjectInfo>
+                                <StyledFieldSpan $color={"#447bba"} $marginRight={"5px"}>Project:</StyledFieldSpan>
+                                <StyledFieldSpan>{project.title}</StyledFieldSpan>
+                            </StyledHeaderProjectInfo>
+                            <StyledHeaderTestSuiteInfo>
+                                <StyledHeaderTestSuiteInfoField>
+                                    <StyledFieldSpan $color={"#447bba"} $marginRight={"5px"}>Test-suite:</StyledFieldSpan>
+                                    <StyledFieldSpan>{testSuite.title}</StyledFieldSpan>
+                                </StyledHeaderTestSuiteInfoField>
+                                <StyledHeaderTestSuiteInfoField>
+                                    <StyledFieldSpan $color={"#447bba"} $marginRight={"5px"}>Environment:</StyledFieldSpan>
+                                    <StyledFieldSpan>{testSuiteRunSession.environment}</StyledFieldSpan>
+                                </StyledHeaderTestSuiteInfoField>
+                                <StyledHeaderTestSuiteInfoField>
+                                    <StyledFieldSpan $color={"#447bba"} $marginRight={"5px"}>Progress:</StyledFieldSpan>
+                                    <StyledFieldSpan>{progress} of {testSuite.numberOfTestCases}</StyledFieldSpan>
+                                </StyledHeaderTestSuiteInfoField>
+                            </StyledHeaderTestSuiteInfo>
+                            <StyledHeaderSessionStatisticGrid>
+                                {renderStatistic()}
+                            </StyledHeaderSessionStatisticGrid>
+                        </StyledHeaderMainContent>
+                        <StyledHeaderMainControllersContent>
+                            <Button buttonConfig={endTestingSessionButtonConfig}/>
+                            <Button buttonConfig={cancelTestingSessionButtonConfig}/>
+                        </StyledHeaderMainControllersContent>
                     </StyledHeaderSection>
                     <StyledTestCasesSection>
                         { testSuiteRunSession.testCaseRunResults?.length > 0 ?
@@ -231,6 +300,7 @@ const RunTestSuitePage = () => {
                                 <RunTestCase
                                     key={runTestCase.testCase.id}
                                     runTestCase={runTestCase}
+                                    onStatusChange={updateSessionStatistic}
                                 />
                             ))
                             : <p>Test-cases not found</p>
@@ -246,4 +316,4 @@ const RunTestSuitePage = () => {
     );
 }
 
-export default RunTestSuitePage;
+export default React.memo(RunTestSuitePage);

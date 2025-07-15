@@ -53,7 +53,7 @@ const StyledTitleAttrContainer = styled.div`
     justify-content: flex-start;
     align-items: flex-start;
     text-align: center;
-    min-width: 90%;
+    max-width: 95%;
 `;
 
 const StyledDescriptionAttrContainer = styled.div`
@@ -112,6 +112,7 @@ const TestSuite = (
     const [runTestSuiteSessionResponse, setRunTestSuiteSessionResponse] = useState(null);
     const [runTestSuiteSessionResponseStatus, setRunTestSuiteSessionResponseStatus] = useState(null);
     const navigate = useNavigate();
+    const [runTestSuiteSessionButtonDisabled, setRunTestSuiteSessionButtonDisabled] = useState(false);
 
     const token = CookieService.getCookie("token");
 
@@ -133,6 +134,7 @@ const TestSuite = (
 
     const runTestSuiteSession = () => {
         const testSuiteId = testSuite.id;
+        setRunTestSuiteSessionButtonDisabled(true);
 
         RequestService.postAuthorizedRequestWithParams(
             `${Routes.SUITE_ROUTE}/${testSuite.id}/run`,
@@ -143,11 +145,12 @@ const TestSuite = (
             .then(res => {
                 setRunTestSuiteSessionResponseStatus(res.status);
                 setRunTestSuiteSessionResponse(res.data)
-
+                setRunTestSuiteSessionButtonDisabled(false);
                 navigate(`/projects/${projectId}/${testSuiteId}/run?sessionId=${res.data.runSessionId}`);
             })
             .catch(err => {
                 setRunTestSuiteSessionResponseStatus(err.status);
+                setRunTestSuiteSessionButtonDisabled(false);
             });
     }
 
@@ -178,7 +181,7 @@ const TestSuite = (
         fontColor: "white",
         borderRadius: "5px",
         onClick: runTestSuiteSession,
-        disabled: false,
+        disabled: runTestSuiteSessionButtonDisabled,
     }
 
     const handleOpenDeleteModal = () => {

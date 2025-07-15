@@ -5,9 +5,7 @@ import {AiOutlineClose} from "react-icons/ai";
 import {BiSolidRightArrow} from "react-icons/bi";
 import Modal from "../ui/Modal.jsx";
 import {useNavigate, useParams} from "react-router";
-import RequestService from "../../service/api/RequestService.js";
 import CookieService from "../../service/cookie/CookieHandlerService.js";
-import {Routes} from "../../constants/Route.js";
 import {useError} from "../hooks/UseErrorHandler.jsx";
 
 const StyledActiveSessionArticle = styled.div`
@@ -42,6 +40,7 @@ const StyledControllersArticle = styled.article`
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    min-height: 100%;
 `;
 
 const StyledParagraph = styled.p`

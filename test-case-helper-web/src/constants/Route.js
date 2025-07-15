@@ -9,6 +9,7 @@ export class Routes {
     static PROJECTS_ROUTE = `${this.defaultApiUrl}/api/v1/project`;
     static SUITE_ROUTE = `${this.defaultApiUrl}/api/v1/suite`;
     static ACTIVE_SESSION_RUN_SUITE_ROUTE = `${this.defaultApiUrl}/api/v1/suite/run/active`;
+    static RUN_TEST_SUITE_SESSION_ROUTE = `${this.defaultApiUrl}/api/v1/suite/run`;
     static USER_ROUTE = `${this.defaultApiUrl}/api/v1/user`;
     static CREATE_PROJECT_ROUTE = `${this.defaultApiUrl}/api/v1/project/create`;
     static GET_ALL_TEST_SUITES_FOR_PROJECT_ROUTE = `${this.defaultApiUrl}/api/v1/project/{id}/suites`;

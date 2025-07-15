@@ -1,9 +1,15 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import styled from "styled-components";
 
 import Button from "../ui/Button.jsx";
 import CustomSelect from "../ui/CustomSelect.jsx";
+import CustomTextArea from "../ui/CustomTextArea.jsx";
+import RequestService from "../../service/api/RequestService.js";
+import {Routes} from "../../constants/Route.js";
+import CookieService from "../../service/cookie/CookieHandlerService.js";
+import {useParams, useSearchParams} from "react-router";
+import {useError} from "../hooks/UseErrorHandler.jsx";
 
 const StyledTestCase = styled.article`
     display: flex;
@@ -101,7 +107,7 @@ const status = [
         styles: {
             color: "black",
             backgroundColor: "green",
-            borderRadius: "10px",
+            // borderRadius: "10px",
             padding: "5px",
         }
     },
@@ -111,7 +117,7 @@ const status = [
         styles: {
             color: "black",
             backgroundColor: "red",
-            borderRadius: "10px",
+            // borderRadius: "10px",
             padding: "5px",
         }
     },
@@ -121,7 +127,7 @@ const status = [
         styles: {
             color: "black",
             backgroundColor: "crimson",
-            borderRadius: "10px",
+            // borderRadius: "10px",
             padding: "5px",
         }
     },
@@ -131,7 +137,7 @@ const status = [
         styles: {
             color: "black",
             backgroundColor: "lightblue",
-            borderRadius: "10px",
+            // borderRadius: "10px",
             padding: "5px",
         }
     },
@@ -141,16 +147,62 @@ const status = [
         styles: {
             color: "black",
             backgroundColor: "gray",
-            borderRadius: "10px",
+            marinTop: "5px",
+            borderRadius: "5px",
             padding: "5px",
         }
     },
 ]
 
-const RunTestCase = ({runTestCase}) => {
+const StyledSaveDataArticle = styled.article`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+`;
 
-    const [actualResult, setActualResult] = useState(null);
-    const [comment, setComment] = useState(null);
+const StyledSpan = styled.span`
+    color: ${props => props.$color ? props.$color : 'black'};
+    min-width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`;
+
+const StyledTextValue = styled.p`
+    display: flex;
+    word-break: break-all;
+`;
+
+const RunTestCase = ({runTestCase, onStatusChange}) => {
+    const {projectId} = useParams();
+    const {suiteId} = useParams();
+    const [searchParams] = useSearchParams();
+    const sessionId = searchParams.get("sessionId");
+
+    const {setError} = useError();
+
+    const [actualResultIsVisible, setActualResultIsVisible] = useState(false);
+    const [commentIsVisible, setCommentIsVisible] = useState(false);
+
+    const [runTestCaseData, setRunTestCaseData] = useState( {
+        testSuiteId: suiteId,
+        sessionId: sessionId,
+        testCaseResultId: runTestCase.id,
+        actualResult: runTestCase.testCase.actualResult || "",
+        status: runTestCase.testCase.status || "NOT_TESTING",
+        comment: runTestCase.testCase.comment || ""
+    })
+    const [savedResults, setSavedResults] = useState({
+        testCaseResultId: runTestCase.id,
+        actualResult: runTestCase.actualResult || "",
+        status: runTestCase.status || "NOT_TESTING",
+        comment: runTestCase.comment || ""
+    });
+    const [savedResultsRequestStatus, setSavedResultsRequestStatus] = useState(null);
+
+    const token = CookieService.getCookie("token");
 
     const renderSteps = (items, prefix) => {
         return items?.map((item, index) =>
@@ -160,21 +212,166 @@ const RunTestCase = ({runTestCase}) => {
         )
     }
 
-    const handleChangeActualResult = () => {
+    const handleOpenActualResult = () => {
+        if (!actualResultIsVisible) {
+            setRunTestCaseData({
+                ...runTestCaseData,
+                actualResult: savedResults.actualResult
+            })
+        }
 
+        setActualResultIsVisible(!actualResultIsVisible);
+    }
+    const handleChangeActualResult = (field) => (e) => {
+        setRunTestCaseData({
+            ...runTestCaseData,
+            [field]: e.target.value
+        });
+    }
+    const handleOpenComment = () => {
+        if (!commentIsVisible) {
+            setRunTestCaseData({
+                ...runTestCaseData,
+                comment: savedResults.comment
+            })
+        }
+
+        setCommentIsVisible(!commentIsVisible);
+    }
+    const handleChangeComment = (field) => (e) => {
+        setRunTestCaseData({
+            ...runTestCaseData,
+            [field]: e.target.value
+        });
+    }
+    const handleChangeStatus = (status) => {
+        const updatedStatus = {
+            ...runTestCaseData,
+            status: status
+        }
+
+        setRunTestCaseData(updatedStatus);
+
+        RequestService.putAuthorizedRequest(
+            `${Routes.RUN_TEST_SUITE_SESSION_ROUTE}/update`,
+            updatedStatus,
+            token
+        )
+            .then(res => {
+                setSavedResults(res.data);
+                setSavedResultsRequestStatus(res.status);
+                onStatusChange(res.data.sessionStatistic)
+            })
+            .catch(err => {
+                if (err.response?.status === 401) {
+                    setError(true);
+                }
+                setSavedResultsRequestStatus(err.status);
+            });
     }
 
-    const changeButtonConfig = {
+    const handleSaveUpdatedFields = (setIsVisible) => {
+        setSavedResultsRequestStatus(null);
+
+        RequestService.putAuthorizedRequest(
+            `${Routes.RUN_TEST_SUITE_SESSION_ROUTE}/update`,
+            runTestCaseData,
+            token
+        )
+            .then(res => {
+                setSavedResults(res.data);
+                setSavedResultsRequestStatus(res.status);
+                if (setIsVisible !== null) {
+                    setIsVisible(false);
+                }
+            })
+            .catch(err => {
+                if (err.response?.status === 401) {
+                    setError(true);
+                }
+                setSavedResultsRequestStatus(err.status);
+            });
+    }
+
+
+    const changeActualResultButtonConfig = {
         buttonName: "+",
-        maxHeight: "20px"
+        maxHeight: "20px",
+        onClick: handleOpenActualResult
     }
+    const changeCommentButtonConfig = {
+        buttonName: "+",
+        maxHeight: "20px",
+        onClick: handleOpenComment
+    }
+    const saveActualResultUpdatedButtonConfig = {
+        buttonName: "Save",
+        minWidth: "100%",
+        borderRadius: "5px",
+        backgroundColor: "green",
+        fontColor: "white",
+        backGroundHoverFontColor: "white",
+        backGroundHoverColor: "#008000c9",
+        disabled: setSavedResultsRequestStatus == null,
+        onClick: () => handleSaveUpdatedFields(setActualResultIsVisible)
+    }
+    const saveCommentUpdatedButtonConfig = {
+        buttonName: "Save",
+        minWidth: "100%",
+        borderRadius: "5px",
+        backgroundColor: "green",
+        backGroundHoverColor: "#008000c9",
+        backGroundHoverFontColor: "white",
+        fontColor: "white",
+        disabled: setSavedResultsRequestStatus == null,
+        onClick: () => handleSaveUpdatedFields(setCommentIsVisible),
+    }
+
+    const renderCustomTextArea = (
+        isVisibleContainer,
+        value,
+        onChange,
+        saveUpdatedButtonConfig,
+        savedValue,
+        placeholder
+    ) => {
+        return ( isVisibleContainer
+            ? <StyledSaveDataArticle>
+                <CustomTextArea
+                    value={value}
+                    onChange={onChange}
+                    isError={savedResultsRequestStatus >= 400}
+                />
+                <Button buttonConfig={saveUpdatedButtonConfig}/>
+            </StyledSaveDataArticle>
+            : <StyledTextValue>
+                    {
+                        savedValue !== ""
+                            ? savedValue
+                            : <StyledSpan $color={"gray"}>{placeholder}</StyledSpan>
+                    }
+            </StyledTextValue>
+
+        )
+    }
+
+    useEffect(() => {
+        setRunTestCaseData({
+            testSuiteId: suiteId,
+            sessionId: sessionId,
+            testCaseResultId: runTestCase.id,
+            actualResult: runTestCase.actualResult || "",
+            status: runTestCase.status || "NOT_TESTING",
+            comment: runTestCase.comment || ""
+        });
+    }, [runTestCase, sessionId, suiteId]);
 
     return (
         <StyledTestCaseWrapper key={runTestCase.testCase.id}>
             <StyledTestCase>
                 <StyledTestCaseColumn>
                     <StyledTestCaseColumnTitle>ID</StyledTestCaseColumnTitle>
-                    {runTestCase.testCase.id}
+                    {runTestCase.id}
                 </StyledTestCaseColumn>
                 <StyledTestCaseColumn>
                     <StyledTestCaseColumnTitle>Title</StyledTestCaseColumnTitle>
@@ -199,24 +396,40 @@ const RunTestCase = ({runTestCase}) => {
                 <StyledTestCaseRunController>
                     <StyledTestCaseExtraColumnTitle>
                         Actual result:
-                        <Button buttonConfig={changeButtonConfig}/>
+                        <Button buttonConfig={changeActualResultButtonConfig}/>
                     </StyledTestCaseExtraColumnTitle>
-                    <p>Smth</p>
+                    { renderCustomTextArea(
+                        actualResultIsVisible,
+                        runTestCaseData.actualResult,
+                        handleChangeActualResult("actualResult"),
+                        saveActualResultUpdatedButtonConfig,
+                        savedResults.actualResult,
+                        "Add a actual result"
+                        )
+                    }
                 </StyledTestCaseRunController>
                 <StyledTestCaseRunController>
                     <StyledTestCaseColumnTitle>Status:</StyledTestCaseColumnTitle>
-                    <CustomSelect options={status} />
+                    <CustomSelect options={status} value={runTestCaseData.status} onChange={handleChangeStatus}/>
                 </StyledTestCaseRunController>
                 <StyledTestCaseRunController>
                     <StyledTestCaseExtraColumnTitle>
                         Comment:
-                        <Button buttonConfig={changeButtonConfig}/>
+                        <Button buttonConfig={changeCommentButtonConfig}/>
                     </StyledTestCaseExtraColumnTitle>
-                    <p>Smth</p>
+                    { renderCustomTextArea(
+                        commentIsVisible,
+                        runTestCaseData.comment,
+                        handleChangeComment("comment"),
+                        saveCommentUpdatedButtonConfig,
+                        savedResults.comment,
+                        "Add a comment"
+                        )
+                    }
                 </StyledTestCaseRunController>
             </StyledTestCase>
         </StyledTestCaseWrapper>
     );
 };
 
-export default RunTestCase;
+export default React.memo(RunTestCase);
