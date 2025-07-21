@@ -9,6 +9,7 @@ export const handleError = (error, navigate) => {
     const errors = new Map([
         [404, "Not found"],
         [400, "Bad request"],
+        [401, "Unauthorized"],
     ]);
 
     const status = error.response?.status || 500;

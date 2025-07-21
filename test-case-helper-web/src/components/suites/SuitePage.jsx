@@ -152,7 +152,7 @@ const SuitePage = () => {
                 }
                 setProjectRequestStatus(err.status)
             });
-    }, [testSuite]);
+    }, [projectId, setError, testSuite, token]);
 
     const handleChangePage = (newPage) => {
         setPage(newPage);

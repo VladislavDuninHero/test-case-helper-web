@@ -49,6 +49,15 @@ export default class RequestService {
         );
     }
 
+    static getBaseAuthorizedRequest(uri, token) {
+        return axios.get(uri, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+        );
+    }
+
     static getAuthorizedRequestWithBlob(uri, token) {
         return axios.get(uri, {
             headers: {

@@ -18,4 +18,5 @@ export class Routes {
     static CREATE_TEST_CASE_ROUTE = `${this.defaultApiUrl}/api/v1/case/create`;
     static TEST_CASE_ROUTE = `${this.defaultApiUrl}/api/v1/case`;
     static LOAD_EXCEL_BACKUP_ROUTE = `${this.defaultApiUrl}/api/v1/converters/excel`;
+    static LOAD_WORD_REPORT_AFTER_RUN_TEST_SUITE_SESSION_ROUTE = `${this.defaultApiUrl}/api/v1/converters/suite`;
 }

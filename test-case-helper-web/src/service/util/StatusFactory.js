@@ -2,11 +2,11 @@
 export default class StatusFactory {
 
     static statuses = new Map([
-        ["NOT_TESTING", ["notTesting", "gray"]],
-        ["PASSED", ["passed", "green"]],
-        ["FAILED", ["failed", "red"]],
-        ["SKIPPED", ["skipped", "lightblue"]],
-        ["BLOCKED", ["blocked", "crimson"]]
+        ["NOT_TESTING", ["NOT TESTING", "gray"]],
+        ["PASSED", ["PASSED", "green"]],
+        ["FAILED", ["FAILED", "red"]],
+        ["SKIPPED", ["SKIPPED", "blue"]],
+        ["BLOCKED", ["BLOCKED", "crimson"]]
     ]);
 
     static getStatus(status) {

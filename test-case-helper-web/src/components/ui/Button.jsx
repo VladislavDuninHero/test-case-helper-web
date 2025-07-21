@@ -23,6 +23,7 @@ const StyledButton = styled.button`
   position: relative;
 
   &:hover {
+        filter: brightness(0.9);
         background-color: ${(props) => (props.$backGroundHoverColor ? props.$backGroundHoverColor : "#1768c4")};
         color: ${(props) => (props.$backGroundHoverFontColor ? props.$backGroundHoverFontColor : "white")};
         border: ${(props) => (props.$border ? props.$border : "")};

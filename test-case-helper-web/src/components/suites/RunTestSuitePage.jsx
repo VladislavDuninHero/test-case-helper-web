@@ -2,25 +2,22 @@ import React, {useCallback, useEffect, useMemo, useState} from 'react';
 
 import MainWrapper from '../global-wrappers/MainWrapper';
 import LayoutWrapperWithHeader from '../global-wrappers/LayoutWrapperWithHeader';
-import Input from '../ui/Input';
 import Button from '../ui/Button';
 
-import Notification from '../notification/Notification.jsx';
 
 import RequestService from '../../service/api/RequestService';
 import CookieService from '../../service/cookie/CookieHandlerService';
-import TagFactory from '../../service/util/TagFactory.js';
 import {Routes} from '../../constants/Route';
 
 import styled from 'styled-components';
 import {useNavigate, useParams, useSearchParams} from 'react-router';
-import {Navigate} from 'react-router';
 import {useError} from "../hooks/UseErrorHandler.jsx";
 import Loader from "../ui/Loader.jsx";
 import RunTestCase from "../cases/RunTestCase.jsx";
 import PaginationPanel from "../pagination/PaginationPanel.jsx";
 import {handleError} from "../../service/error/ErrorHandler.jsx";
-import StatusFactory from "../../service/util/StatusFactory.js";
+import Notification from "../notification/Notification.jsx";
+import Modal from "../ui/Modal.jsx";
 
 const StyledRunTestSuiteWrapper = styled.section`
     min-height: 100vh;
@@ -63,6 +60,8 @@ const StyledHeaderMainControllersContent = styled.article`
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    gap: 5px;
+    margin-right: 5px;
 `;
 
 const StyledHeaderTestSuiteInfo = styled.article`
@@ -99,6 +98,12 @@ const StyledTestCasesSection = styled.section`
     min-width: 100%;
 `;
 
+const StyledParagraph = styled.p`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 5px;
+`;
 
 const RunTestSuitePage = () => {
 
@@ -116,11 +121,91 @@ const RunTestSuitePage = () => {
     const [testSuiteRunSession, setTestSuiteRunSession] = useState({});
     const [testSuiteRunSessionRequestStatus, setTestSuiteRunSessionRequestStatus] = useState({});
     const [testSuite, setTestSuite] = useState({});
-    const [testSuiteRunSessionId, setTestSuiteRunSessionId] = useState(null);
     const [project, setProject] = useState({});
     const [page, setPage] = useState(0);
     const [size, setSize] = useState(50);
     const [progress, setProgress] = useState(0);
+    const [cancelTestSuiteRunSessionResponse, setCancelTestSuiteRunSessionResponse] = useState(false);
+    const [endTestSuiteRunSessionResponse, setEndTestSuiteRunSessionResponse] = useState(false);
+    const [endTestSuiteRunSessionIsLoading, setEndTestSuiteRunSessionIsLoading] = useState(false);
+
+    const [endSessionModalIsOpen, setEndSessionModalIsOpen] = useState(false);
+    const handleCloseEndSessionModal = () => {
+        setEndSessionModalIsOpen(false);
+    }
+    const handleOpenEndSessionModal = () => {
+        setEndSessionModalIsOpen(true);
+    }
+    const handleEndTestSuiteRunSession = () => {
+        setEndTestSuiteRunSessionIsLoading(true);
+
+        RequestService.putAuthorizedRequest(
+            `${Routes.TEST_SUITE_ROUTE}/run/${testSuiteRunSession.id}/end`,
+            "",
+            token
+        )
+            .then(res => {
+                setEndTestSuiteRunSessionResponse(res.data);
+
+                setEndTestSuiteRunSessionIsLoading(false);
+
+                navigate(`/projects/${projectId}/${testSuite.id}/run/${sessionId}/ended`)
+            })
+            .catch(err => {
+                if (err.response?.status === 401) {
+                    setError(true);
+                }
+
+                setEndTestSuiteRunSessionIsLoading(true);
+
+                handleError(err, navigate, {
+                    404: Routes.ERROR_ROUTE,
+                    400: Routes.ERROR_ROUTE
+                })
+            });
+    }
+    const confirmEndTestSuiteRunSessionConfig = {
+        buttonName: "Confirm",
+        backgroundColor: "green",
+        backgroundHoverFontColor: "white",
+        backGroundHoverColor: "none",
+        borderRadius: "5px",
+        fontColor: "white",
+        disabled: endTestSuiteRunSessionIsLoading,
+        onClick: handleEndTestSuiteRunSession
+    }
+
+    const [cancelSessionModalIsOpen, setCancelSessionModalIsOpen] = useState(false);
+    const handleCloseCancelSessionModal = () => {
+        setCancelSessionModalIsOpen(false);
+    }
+    const handleOpenCancelSessionModal = () => {
+        setCancelSessionModalIsOpen(true);
+    }
+    const handleCancelTestSuiteRunSession = () => {
+        RequestService.deleteAuthorizedRequest(
+            `${Routes.TEST_SUITE_ROUTE}/${testSuiteRunSession.testSuite.id}/run/${testSuiteRunSession.id}/delete`,
+            token
+        )
+            .then(res => {
+                setCancelTestSuiteRunSessionResponse(res.data);
+                navigate(`/projects/${projectId}`);
+            })
+            .catch(err => {
+                if (err.response?.status === 401) {
+                    setError(true);
+                }
+            });
+    }
+    const confirmCancelTestSuiteRunSessionConfig = {
+        buttonName: "Confirm",
+        backgroundColor: "green",
+        backgroundHoverFontColor: "white",
+        backGroundHoverColor: "none",
+        borderRadius: "5px",
+        fontColor: "white",
+        onClick: handleCancelTestSuiteRunSession
+    }
 
     const [statistic, setStatistic] = useState({
         passed: 0,
@@ -251,10 +336,24 @@ const RunTestSuitePage = () => {
     }
 
     const endTestingSessionButtonConfig = {
-        buttonName: "End testing session"
+        buttonName: "End testing session",
+        minWidth: "100%",
+        backGroundHoverColor: "none",
+        backGroundHoverFontColor: "none",
+        backgroundColor: "green",
+        fontColor: "white",
+        border: "none",
+        onClick: handleOpenEndSessionModal
     }
     const cancelTestingSessionButtonConfig = {
-        buttonName: "Cancel testing session"
+        buttonName: "Cancel testing session",
+        minWidth: "100%",
+        fontColor: "white",
+        backgroundColor: "#E74C3C",
+        backGroundHoverColor: "none",
+        backGroundHoverFontColor: "none",
+        border: "none",
+        onClick: handleOpenCancelSessionModal
     }
 
     if (loading) {
@@ -290,8 +389,8 @@ const RunTestSuitePage = () => {
                             </StyledHeaderSessionStatisticGrid>
                         </StyledHeaderMainContent>
                         <StyledHeaderMainControllersContent>
-                            <Button buttonConfig={endTestingSessionButtonConfig}/>
                             <Button buttonConfig={cancelTestingSessionButtonConfig}/>
+                            <Button buttonConfig={endTestingSessionButtonConfig}/>
                         </StyledHeaderMainControllersContent>
                     </StyledHeaderSection>
                     <StyledTestCasesSection>
@@ -311,6 +410,14 @@ const RunTestSuitePage = () => {
                     ? <PaginationPanel onPageChange={handleChangePage} pageSize={size} totalElements={testSuite.numberOfTestCases} currentPage={page} />
                     : ""
                 }
+                <Modal isOpen={endSessionModalIsOpen} closeModal={handleCloseEndSessionModal}>
+                    <StyledParagraph>Are you sure to want to end the testing session?</StyledParagraph>
+                    <Button buttonConfig={confirmEndTestSuiteRunSessionConfig} />
+                </Modal>
+                <Modal isOpen={cancelSessionModalIsOpen} closeModal={handleCloseCancelSessionModal}>
+                    <StyledParagraph>Cancel the testing session? All changes has been deleted.</StyledParagraph>
+                    <Button buttonConfig={confirmCancelTestSuiteRunSessionConfig} />
+                </Modal>
             </LayoutWrapperWithHeader>
         </MainWrapper>
     );

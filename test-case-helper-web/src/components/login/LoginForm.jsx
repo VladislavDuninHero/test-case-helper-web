@@ -111,7 +111,7 @@ const LoginForm = () => {
                 <label>Login: </label>
                 <Input 
                     type="text" 
-                    placeholder={"login"} 
+                    placeholder={"LDAP"}
                     onChange={handleChange("login")} 
                     margin={"5px 0px 5px 0px"}
                 />

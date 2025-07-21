@@ -170,7 +170,7 @@ const TestSuite = (
         minHeight: "10%",
         border: "none",
         background: "none",
-        backGroundHoverColor: "white",
+        backGroundHoverColor: "none",
         backGroundHoverFontColor: "#008000b8",
         fontSize: "30px",
         padding: "0",

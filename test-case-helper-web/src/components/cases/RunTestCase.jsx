@@ -54,11 +54,11 @@ const StyledTestCaseRunController = styled.article`
     min-width: 0;
     flex-direction: column;
     justify-content: flex-start;
-    align-items: flex-start;
+    align-items: ${props => props.$alignItems || 'flex-start'};
     gap: 10px;
     height: 100%;
     padding: 5px;
-    max-width: 300px;
+    max-width: ${props => props.$maxWidth || '300px'};
     
     &:not(:last-child) {
         border-right: 1px solid #8f8d8dad;
@@ -97,7 +97,7 @@ const StyledStatusSpan = styled.span`
     padding: 5px;
     border-radius: 10px;
     color: white;
-    background-color: ${props => props.$backgroundColor ? props.$backgroundColor : ''};;
+    background-color: ${props => props.$backgroundColor ? props.$backgroundColor : ''};
 `;
 
 const status = [
@@ -107,7 +107,6 @@ const status = [
         styles: {
             color: "black",
             backgroundColor: "green",
-            // borderRadius: "10px",
             padding: "5px",
         }
     },
@@ -117,7 +116,6 @@ const status = [
         styles: {
             color: "black",
             backgroundColor: "red",
-            // borderRadius: "10px",
             padding: "5px",
         }
     },
@@ -127,7 +125,6 @@ const status = [
         styles: {
             color: "black",
             backgroundColor: "crimson",
-            // borderRadius: "10px",
             padding: "5px",
         }
     },
@@ -137,7 +134,6 @@ const status = [
         styles: {
             color: "black",
             backgroundColor: "lightblue",
-            // borderRadius: "10px",
             padding: "5px",
         }
     },
@@ -148,7 +144,6 @@ const status = [
             color: "black",
             backgroundColor: "gray",
             marinTop: "5px",
-            borderRadius: "5px",
             padding: "5px",
         }
     },
@@ -408,7 +403,7 @@ const RunTestCase = ({runTestCase, onStatusChange}) => {
                         )
                     }
                 </StyledTestCaseRunController>
-                <StyledTestCaseRunController>
+                <StyledTestCaseRunController $maxWidth={"130px"} $alignItems={"center"}>
                     <StyledTestCaseColumnTitle>Status:</StyledTestCaseColumnTitle>
                     <CustomSelect options={status} value={runTestCaseData.status} onChange={handleChangeStatus}/>
                 </StyledTestCaseRunController>

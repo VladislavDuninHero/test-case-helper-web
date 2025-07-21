@@ -102,7 +102,10 @@ const Project = ({project, onDelete, onUpdate, onDeleteResponse, deleteProjectIs
         <>
         <StyledProjectContainer data-projectid={project.id}>
             <KebabMenu config={kebabMenuConfig} />
-            <StyledTitleAttrContainer>Project: <StyledBoldTextSpan>{project.title}</StyledBoldTextSpan></StyledTitleAttrContainer>
+            <StyledTitleAttrContainer>
+                Project:
+                <StyledBoldTextSpan>{project.title}</StyledBoldTextSpan>
+            </StyledTitleAttrContainer>
             <StyledDescriptionAttrContainer>
                 Description: <StyledBoldTextSpan>{project.description}</StyledBoldTextSpan>
             </StyledDescriptionAttrContainer>
