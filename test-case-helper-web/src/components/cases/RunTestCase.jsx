@@ -155,6 +155,7 @@ const StyledSaveDataArticle = styled.article`
     justify-content: center;
     align-items: center;
     gap: 10px;
+    min-width: 100%;
 `;
 
 const StyledSpan = styled.span`

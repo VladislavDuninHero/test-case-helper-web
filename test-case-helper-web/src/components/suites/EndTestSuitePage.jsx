@@ -76,7 +76,7 @@ const Styledh2Results = styled.h2`
 const StyledSessionInfoWrapper = styled.section`
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: stretch;
     min-width: 750px;
 `;
 

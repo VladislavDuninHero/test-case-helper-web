@@ -28,6 +28,7 @@ const StyledActiveTestSuiteRunSessionContainer = styled.div`
 const StyledSpan = styled.span`
     margin-right: ${(props) => props.$marginRight || "5px"};
     color: ${(props) => props.$color || "black"};
+    text-wrap: ${(props) => props.$textWrap || ""};
 `;
 
 const StyledDiv = styled.div`
@@ -126,7 +127,7 @@ const ActiveTestSuiteRunSession = ({activeSession, onDelete}) => {
                     <StyledSpan $color={"#447bba"}>{activeSession.runSessionId}</StyledSpan>
                 </StyledActiveTestSuiteRunSessionContainer>
                 <StyledActiveTestSuiteRunSessionContainer>
-                    <StyledSpan>Test-suite:</StyledSpan>
+                    <StyledSpan $textWrap={"nowrap"}>Test-suite:</StyledSpan>
                     <StyledSpan $color={"#447bba"}>{activeSession.testSuiteTitle}</StyledSpan>
                 </StyledActiveTestSuiteRunSessionContainer>
                 <StyledActiveTestSuiteRunSessionContainer>
