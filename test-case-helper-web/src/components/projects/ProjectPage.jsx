@@ -21,15 +21,17 @@ import Dropdown from '../ui/Dropdown.jsx';
 import { useNavigate, useParams } from 'react-router';
 
 import { FaArrowRightArrowLeft } from "react-icons/fa6";
+import BaseList from "../ui/BaseList.jsx";
+import ActiveTestSuiteRunSession from "../suites/ActiveTestSuiteRunSession.jsx";
 
 const StyledMainGrid = styled.section`
-    min-width: 90%;
+    min-width: 100%;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 0.2fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 0.2fr));
     gap: 10px;
     align-items: center;
-    justify-items: center;
-    margin: 5px;
+    justify-items: start;
+    padding: 5px;
 `;
 
 const StyledTestSuitesContainer = styled.div`
@@ -67,7 +69,7 @@ const StyledProjectInformationSection = styled.section`
     font-family: 'Inter', sans-serif;
 `;
 
-const StyledInfoTitle = styled.h2`
+const StyledTitle = styled.h2`
     color: #447bba;
     font-size: 20px;
 `;
@@ -139,6 +141,25 @@ const StyledTestSuiteNotFoundArticle = styled.article`
     align-items: center;
 `;
 
+const StyledActiveTestSuiteRunSessionSection = styled.section`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    min-width: 100%;
+    padding: 5px;
+    font-family: 'Inter', sans-serif;
+`;
+
+const StyledParagrapth = styled.p`
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-width: 100%;
+    margin-top: 10px;
+    color: gray;
+`;
+
 const ProjectPage = () => {
     
     const [project, setProject] = useState([]);
@@ -149,6 +170,9 @@ const ProjectPage = () => {
     const [parsedExcelBackupLoading, setParsedExcelBackupLoading] = useState(false);
     const [projectRequestStatus, setprojectRequestStatus] = useState(null);
     const [deleteTestSuiteStatus, setDeleteTestSuiteStatus] = useState(null);
+    const [deleteTestSuiteResponse, setDeleteTestSuiteResponse] = useState({
+        errors: []
+    });
     const [deleteTestSuiteIsLoading, setDeleteTestSuiteIsLoading] = useState(false);
     const {projectId} = useParams();
     const [loading, setLoading] = useState(true);
@@ -156,8 +180,17 @@ const ProjectPage = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const [filterTag, setFilterTag] = useState("");
     const navigate = useNavigate();
+
     const [addExcelFileModalIsOpen, setaddExcelFileModalIsOpen] = useState(false);
     const [excelFile, setExcelFile] = useState(null);
+
+    const [activeRunTestSuiteSessions, setActiveRunTestSuiteSessions] = useState([]);
+    const [activeRunTestSuiteSessionsRequestStatus, setActiveRunTestSuiteSessionsRequestStatus] = useState(null);
+    const [activeRunTestSuiteSessionsLoading, setActiveRunTestSuiteSessionsLoading] = useState(true);
+    const [closeRunTestSuiteSessionResponse, setCloseRunTestSuiteSessionResponse] = useState({
+        errors: []
+    });
+    const [closeRunTestSuiteSessionRequestStatus, setCloseRunTestSuiteSessionRequestStatus] = useState({});
 
     const handleOpenAddExcelFileModal = () => {
         setaddExcelFileModalIsOpen(true);
@@ -184,6 +217,20 @@ const ProjectPage = () => {
             });
 
     }, [projectId, parsedExcelBackupStatus]);
+
+    useEffect(() => {
+        RequestService.getAuthorizedRequest(`${Routes.ACTIVE_SESSION_RUN_SUITE_ROUTE}`, token)
+            .then(res => {
+                setActiveRunTestSuiteSessions(res.data);
+                setActiveRunTestSuiteSessionsRequestStatus(res.status)
+                setActiveRunTestSuiteSessionsLoading(false);
+            })
+            .catch(err => {
+                setError(true);
+                setActiveRunTestSuiteSessionsRequestStatus(err.status)
+                setActiveRunTestSuiteSessionsLoading(false)
+            });
+    }, [setError, token])
 
     if (loading) {
         return <Loader />;
@@ -311,8 +358,40 @@ const ProjectPage = () => {
             .catch(err => {
                 setDeleteTestSuiteStatus(err.status);
                 setDeleteTestSuiteIsLoading(false);
+                setDeleteTestSuiteResponse(prev =>({
+                        ...prev,
+                        status: err.status,
+                        errors: err.response.data.errors
+                    })
+                )
             });
                     
+    }
+
+    const handleCloseTestSuiteRunSession = (activeSession) => {
+        RequestService.deleteAuthorizedRequest(
+            `${Routes.TEST_SUITE_ROUTE}/${activeSession.testSuiteId}/run/${activeSession.runSessionId}/delete`,
+                token
+        )
+            .then(res => {
+                setCloseRunTestSuiteSessionResponse(res.data);
+                setCloseRunTestSuiteSessionRequestStatus(res.status);
+
+                setActiveRunTestSuiteSessions(prevActives => prevActives.filter(active => active.runSessionId !== activeSession.runSessionId));
+            })
+            .catch(err => {
+                if (err.response?.status === 401) {
+                    setError(true);
+                }
+                console.log(err)
+                setCloseRunTestSuiteSessionRequestStatus(err.status);
+                setCloseRunTestSuiteSessionResponse(prev =>({
+                        ...prev,
+                        status: err.status,
+                        errors: err.errors
+                    })
+                )
+            });
     }
 
     const navigateToUpdateTestSuitePage = (testSuite) => {
@@ -346,7 +425,7 @@ const ProjectPage = () => {
                             </StyledArticleConvertControllers>
                         </StyledControllersSection>
                         <StyledProjectInformationSection>
-                            <StyledInfoTitle>Info:</StyledInfoTitle>
+                            <StyledTitle>Info:</StyledTitle>
                             <StyledInfoArticle>
                                 <StyleTextSpan>Project:</StyleTextSpan>
                                 <StyledBoldTextSpan>{project.title}</StyledBoldTextSpan>
@@ -356,6 +435,19 @@ const ProjectPage = () => {
                                 <StyledBoldTextSpan>{project.testSuites.length}</StyledBoldTextSpan>
                             </StyledInfoArticle>
                         </StyledProjectInformationSection>
+                        <StyledActiveTestSuiteRunSessionSection>
+                            <StyledTitle>Active run test-suite sessions:</StyledTitle>
+                            { activeRunTestSuiteSessions?.length > 0
+                                ? activeRunTestSuiteSessions?.map((active) => (
+                                    <ActiveTestSuiteRunSession
+                                        key={active.runSessionId}
+                                        activeSession={active}
+                                        onDelete={() => handleCloseTestSuiteRunSession(active)}
+                                    />
+                                ))
+                                : <StyledParagrapth>Test-suite run sessions not found</StyledParagrapth>
+                            }
+                        </StyledActiveTestSuiteRunSessionSection>
                     </Side>
                     <StyledSectionsWrapper>
                         
@@ -373,6 +465,7 @@ const ProjectPage = () => {
                                             deleteTestSuiteIsLoading={deleteTestSuiteIsLoading}
                                             onDelete={() => deleteTestSuite(testSuite)}
                                             onUpdate={() => navigateToUpdateTestSuitePage(testSuite)}
+                                            onDeleteResponse={deleteTestSuiteResponse}
                                         />
                                     )
                                 }

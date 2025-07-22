@@ -17,6 +17,9 @@ import UpdateTestCasePage from './components/cases/UpdateTestCasePage.jsx';
 
 import AuthProvider from './service/auth/AuthProvider.jsx';
 import UpdateProjectPage from './components/projects/UpdateProjectPage.jsx';
+import RunTestSuitePage from "./components/suites/RunTestSuitePage.jsx";
+import ErrorPage from "./components/errors/ErrorPage.jsx";
+import EndTestSuitePage from "./components/suites/EndTestSuitePage.jsx";
 
 function App() {
   return (
@@ -35,6 +38,9 @@ function App() {
           <Route path="/projects/:projectId/:suiteId/case/create" element={<CreateTestCasePage />} />
           <Route path="/projects/:projectId/:suiteId/:caseId/update" element={<UpdateTestCasePage />} />
           <Route path="/projects/:projectId/suites/:suiteId/case/:caseId" element={<TestCase />}/>
+          <Route path="/projects/:projectId/:suiteId/run" element={<RunTestSuitePage />}/>
+          <Route path="/projects/:projectId/:suiteId/run/:sessionId/ended" element={<EndTestSuitePage />}/>
+          <Route path="/error" element={<ErrorPage />}/>
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AuthProvider>

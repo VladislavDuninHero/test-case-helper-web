@@ -19,6 +19,16 @@ export default class RequestService {
         );
     }
 
+    static postAuthorizedRequestWithParams(uri, body, params, token) {
+        return axios.post(uri, body, {
+                params: params,
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            }
+        );
+    }
+
     static postAuthorizedRequestWithMultipartData(uri, body, token) {
         return axios.post(uri, body, {
                 headers: {
@@ -32,6 +42,15 @@ export default class RequestService {
     static getAuthorizedRequest(uri, token, page, size) {
         return axios.get(uri, {
                 params: {page, size},
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+        );
+    }
+
+    static getBaseAuthorizedRequest(uri, token) {
+        return axios.get(uri, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
