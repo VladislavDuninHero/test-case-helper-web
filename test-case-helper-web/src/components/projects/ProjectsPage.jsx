@@ -13,6 +13,7 @@ import Button from '../ui/Button.jsx';
 import Loader from '../ui/Loader.jsx';
 
 import { useNavigate } from 'react-router';
+import {useAuth} from "../../service/auth/AuthProvider.jsx";
 
 const StyledMainGrid = styled.section`
     min-width: 100%;
@@ -30,6 +31,7 @@ const StyledButtonControllerContainer = styled.section`
     justify-content: stretch;
     align-items: center;
     min-width: 100%;
+    gap: 10px;
 `;
 
 const StyledProjectNotFoundArticle = styled.article`
@@ -49,10 +51,13 @@ const ProjectsPage = () => {
     const [projectsLoading, setProjectLoading] = useState(true);
     const {setError} = useError();
     const navigate = useNavigate();
+    const {hasPermission} = useAuth();
 
     const handleCreateProject = () => {
         return navigate("/projects/create");
     }
+
+    const handleOpenCreateTeamPage = () => navigate("/team/create");
 
     const createProjectButtonConfig = {
         buttonName: "Create project +",
@@ -60,6 +65,14 @@ const ProjectsPage = () => {
         fontColor: "white",
         fontSize: "15px",
         padding: "8px"
+    }
+
+    const createTeamButtonConfig = {
+        buttonName: "Create team +",
+        fontColor: "white",
+        fontSize: "15px",
+        padding: "8px",
+        onClick: handleOpenCreateTeamPage
     }
 
     const token = CookieService.getCookie("token");
@@ -77,6 +90,7 @@ const ProjectsPage = () => {
 
     const deleteProject = (project) => {
         setDeleteProjectIsLoading(true)
+
         RequestService.deleteAuthorizedRequest(`${Routes.PROJECTS_ROUTE}/${project.id}/delete`, token)
             .then(res => {
                 setResponseAfterDeleteProject(res.data);
@@ -112,7 +126,8 @@ const ProjectsPage = () => {
             <MainWrapper>
                 <LayoutWrapperWithHeader config={mainConfig}>
                     <StyledButtonControllerContainer>
-                        <Button buttonConfig={createProjectButtonConfig} />
+                        { hasPermission('CREATE_PROJECT') && <Button buttonConfig={createProjectButtonConfig} />}
+                        { hasPermission('CREATE_TEAM') && <Button buttonConfig={createTeamButtonConfig} />}
                     </StyledButtonControllerContainer>
                     { projectsLoading ? <Loader /> :                   
                         projects.length > 0 

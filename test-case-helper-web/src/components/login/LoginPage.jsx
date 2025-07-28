@@ -9,9 +9,10 @@ const StyledLoginFormWrapper = styled.section`
     justify-content: center;
     flex-direction: column;
     align-items: center;
-    border: 1px solid #8f8d8dad;
     border-radius: 10px;
-    padding: 10px;
+    padding: 20px;
+    background-color: ${props => props.theme.colors.backgroundColor};
+    box-shadow: ${props => props.theme.effects.boxShadow};
 `;
 
 const StyledFormLabel = styled.label`

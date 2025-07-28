@@ -16,6 +16,7 @@ const StyledForm = styled.form`
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    gap: 10px;
 `;
 
 const StyledArticleLabelWithInput = styled.article`
@@ -102,6 +103,7 @@ const LoginForm = () => {
         borderRadius: "5px",
         minWidth: "100%",
         border: "1px solid lightblue",
+        minHeight: "40px",
         disabled: loginButtonIsDisabled
     }
 

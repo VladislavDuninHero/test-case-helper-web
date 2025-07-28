@@ -25,7 +25,7 @@ const StyledTestSuiteArticle = styled.article`
     align-items: flex-start;
     margin: 5px;
     border-radius: 5px;
-    padding: 5px;
+    padding: 10px;
     min-height: 100%;
     min-width: 100%;
     text-align: center;

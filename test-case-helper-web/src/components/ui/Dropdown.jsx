@@ -7,6 +7,7 @@ const StyledSelect = styled.select`
     min-height: 30px;
     margin-bottom: ${(props) => (props.$marginBottom ? props.$marginBottom : "0")};
     cursor: pointer;
+    padding: ${(props) => (props.$padding ? props.$padding : "0")};
 `;
 
 const Dropdown = ({children, onChange, selectConfig, value}) => {
@@ -16,6 +17,7 @@ const Dropdown = ({children, onChange, selectConfig, value}) => {
             onChange={onChange}
             $borderRadius={selectConfig.borderRadius}
             $marginBottom={selectConfig.marginBottom}
+            $padding={selectConfig.padding}
             value={value}
         >
             {children}
