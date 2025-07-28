@@ -7,10 +7,11 @@ const StyledInput = styled.input`
     padding: ${(props) => (props.$padding ? props.$padding : "5px")};
     margin: ${(props) => (props.$margin ? props.$margin : "5px 5px 5px 5px")};
     min-width: ${(props) => (props.$minWidthPercent ? props.$minWidthPercent : "100%")};
+    max-width: ${(props) => (props.$maxWidthPercent ? props.$maxWidthPercent : "100%")};
     border: 1px solid #8f8d8dad;
 `;
 
-const Input = ({type, placeholder, value, onChange, version, minWidthPercent, padding, margin}) => {
+const Input = ({type, placeholder, value, onChange, version, minWidthPercent, padding, margin, maxWidthPercent}) => {
   return (
     <StyledInput 
         $minWidthPercent={minWidthPercent}
@@ -20,6 +21,7 @@ const Input = ({type, placeholder, value, onChange, version, minWidthPercent, pa
         onChange={onChange}
         $padding={padding}
         $margin={margin}
+        $maxWidthPercent={maxWidthPercent}
     />
   )
 }

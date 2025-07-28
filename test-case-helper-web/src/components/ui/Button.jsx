@@ -5,11 +5,12 @@ import Loader from "./Loader.jsx";
 
 const StyledButton = styled.button`
   display: flex;
-  justify-content: center;
+  justify-content: ${(props) => (props.$justifyContent ? props.$justifyContent : "center")};
   align-items: center;
   border: ${(props) => (props.$border ? props.$border : "1px solid lightblue")};
   border-radius: ${(props) => (props.$borderRadius ? props.$borderRadius : "")};
   min-width: ${(props) => (props.$minWidth ? props.$minWidth : "")};
+  min-height: ${(props) => (props.$minHeight ? props.$minHeight : "")};
   max-height: ${(props) => (props.$maxHeight ? props.$maxHeight : "")};
   margin-left: ${(props) => (props.$marginLeft ? props.$marginLeft : "")};
   margin-top: ${(props) => (props.$marginTop ? props.$marginTop : "")};
@@ -18,6 +19,7 @@ const StyledButton = styled.button`
   color: ${(props) => (props.$fontColor ? props.$fontColor : "")};
   font-size: ${(props) => (props.$fontSize ? props.$fontSize : "16px")};
   background: ${(props) => (props.$background ? props.$background : "")};
+  font-weight: ${(props) => (props.$fontWeight ? props.$fontWeight : "")};;
   cursor: pointer;
   transition: all ease 0.2s;
   position: relative;
@@ -30,7 +32,7 @@ const StyledButton = styled.button`
   }
 
   &:active {
-      transform: scale(0.98);
+      transform: ${(props) => (props.$activeEffect ? props.$activeEffect : "scale(0.98)")};
   }
 
   &:disabled {
@@ -40,12 +42,16 @@ const StyledButton = styled.button`
 `;
 
 const Button = ({buttonConfig}) => {
+
+  const reversed = buttonConfig.reversed;
+
   return (
     <StyledButton 
       onClick={buttonConfig.disabled ? null : buttonConfig.onClick} 
       $borderRadius={buttonConfig.borderRadius}
       $minWidth={buttonConfig.minWidth}
       $maxHeight={buttonConfig.maxHeight}
+      $minHeight={buttonConfig.minHeight}
       $marginLeft={buttonConfig.marginLeft}
       $fontColor={buttonConfig.fontColor}
       $border={buttonConfig.border}
@@ -57,9 +63,22 @@ const Button = ({buttonConfig}) => {
       $backGroundHoverFontColor={buttonConfig.backGroundHoverFontColor}
       $disabled={buttonConfig.disabled}
       $background={buttonConfig.background}
+      $activeEffect={buttonConfig.activeEffect}
+      $justifyContent={buttonConfig.justifyContent}
+      $fontWeight={buttonConfig.fontWeight}
       disabled={buttonConfig.disabled}
     >
-      {buttonConfig.buttonName}
+      { reversed ?
+          <>
+            {buttonConfig.children}
+            {buttonConfig.buttonName}
+          </>
+          :
+          <>
+            {buttonConfig.buttonName}
+            {buttonConfig.children}
+          </>
+      }
     </StyledButton>
   )
 }

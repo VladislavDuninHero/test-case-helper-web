@@ -17,11 +17,12 @@ const StyledProjectContainer = styled.article`
     align-items: flex-start;
     justify-content: space-between;
     border-radius: 5px;
-    padding: 5px;
+    padding: 10px;
     min-height: 100%;
     min-width: 100%;
     text-align: center;
     background-color: #ffffff;
+    box-shadow: ${props => props.theme.effects.boxShadow};
 `;
 
 const StyledButtonWrapper = styled.div`
@@ -29,11 +30,16 @@ const StyledButtonWrapper = styled.div`
     align-items: center;
     justify-content: center;
     min-width: 100%;
+    margin-top: 5px;
 `;
 
 const StyledBoldTextSpan = styled.span`
     font-weight: bold;
     text-align: start;
+`;
+
+const StyledTextSpan = styled.span`
+    margin-right: 5px;
 `;
 
 const StyledTitleAttrContainer = styled.div`
@@ -48,6 +54,13 @@ const StyledDescriptionAttrContainer = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
+    text-align: center;
+`;
+
+const StyledTeamAttrContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
     text-align: center;
 `;
 
@@ -103,11 +116,16 @@ const Project = ({project, onDelete, onUpdate, onDeleteResponse, deleteProjectIs
         <StyledProjectContainer data-projectid={project.id}>
             <KebabMenu config={kebabMenuConfig} />
             <StyledTitleAttrContainer>
-                Project:
+                <StyledTextSpan>Project:</StyledTextSpan>
                 <StyledBoldTextSpan>{project.title}</StyledBoldTextSpan>
             </StyledTitleAttrContainer>
+            <StyledTeamAttrContainer>
+                <StyledTextSpan>Team:</StyledTextSpan>
+                <StyledBoldTextSpan>{project.teamName}</StyledBoldTextSpan>
+            </StyledTeamAttrContainer>
             <StyledDescriptionAttrContainer>
-                Description: <StyledBoldTextSpan>{project.description}</StyledBoldTextSpan>
+                <StyledTextSpan>Description:</StyledTextSpan>
+                <StyledBoldTextSpan>{project.description}</StyledBoldTextSpan>
             </StyledDescriptionAttrContainer>
             <StyledButtonWrapper>
                 <Button buttonConfig={buttonConfig} />

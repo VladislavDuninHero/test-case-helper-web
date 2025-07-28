@@ -14,7 +14,7 @@ const StyledTestCaseContainer = styled.article`
     justify-content: space-between;
     align-items: stretch;
     border-radius: 5px;
-    padding: 5px;
+    padding: 10px;
     min-width: 100%;
     max-width: 100%;
     background-color: #ffffff;

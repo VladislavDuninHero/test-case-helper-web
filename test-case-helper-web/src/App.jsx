@@ -20,6 +20,8 @@ import UpdateProjectPage from './components/projects/UpdateProjectPage.jsx';
 import RunTestSuitePage from "./components/suites/RunTestSuitePage.jsx";
 import ErrorPage from "./components/errors/ErrorPage.jsx";
 import EndTestSuitePage from "./components/suites/EndTestSuitePage.jsx";
+import CreateTeamPage from "./components/team/CreateTeamPage.jsx";
+import TeamPage from "./components/team/TeamPage.jsx";
 
 function App() {
   return (
@@ -40,6 +42,8 @@ function App() {
           <Route path="/projects/:projectId/suites/:suiteId/case/:caseId" element={<TestCase />}/>
           <Route path="/projects/:projectId/:suiteId/run" element={<RunTestSuitePage />}/>
           <Route path="/projects/:projectId/:suiteId/run/:sessionId/ended" element={<EndTestSuitePage />}/>
+          <Route path="/team/create" element={<CreateTeamPage />}/>
+          <Route path="/team/teammates" element={<TeamPage />}/>
           <Route path="/error" element={<ErrorPage />}/>
           <Route path="*" element={<NotFound />} />
         </Routes>

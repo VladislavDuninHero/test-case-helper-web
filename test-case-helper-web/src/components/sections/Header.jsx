@@ -25,12 +25,7 @@ const StyledHeaderContainer = styled.section`
     display: flex;
     justify-content: space-between;
     min-width: 100%;
-`;
-
-const StyledUserArticle = styled.article`
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    padding: 5px;
 `;
 
 const StyledBackButton = styled.button`
@@ -45,18 +40,6 @@ const StyledBackButton = styled.button`
     }
 `;
 
-const StyledLogoutButton = styled.button`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-left: 5px;
-    font-size: 20px;
-    color: #5181b8;
-
-    &:hover {
-        color: red;
-    }
-`; 
 
 const Header = () => {
 
@@ -66,12 +49,6 @@ const Header = () => {
         navigate(-1);
     }
 
-    const handleLogout = () => {
-        CookieService.deleteCookie("token");
-
-        navigate("/");
-    }
-
     return (
         <StyledHeader>
             <StyledHeaderContainer>
@@ -79,12 +56,7 @@ const Header = () => {
                     <SlArrowLeft />
                 </StyledBackButton>
                 <NavigationPanel />
-                <StyledUserArticle>
-                    <Profile />
-                    <StyledLogoutButton onClick={handleLogout}>
-                        <SlLogout />
-                    </StyledLogoutButton>
-                </StyledUserArticle>
+                <Profile />
             </StyledHeaderContainer>
         </StyledHeader>
     )

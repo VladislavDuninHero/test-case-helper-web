@@ -28,7 +28,6 @@ const StyledCreateTestSuiteForm = styled.form`
 `;
 
 const StyledTextArea = styled.textarea`
-    min-width: 100%;
     padding: 5px;
     min-width: 300px;
     min-height: 200px;

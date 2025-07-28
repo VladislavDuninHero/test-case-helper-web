@@ -11,6 +11,8 @@ import RequestService from '../../service/api/RequestService';
 import CookieService from '../../service/cookie/CookieHandlerService';
 import { Routes } from '../../constants/Route';
 import { Navigate } from 'react-router';
+import Dropdown from "../ui/Dropdown.jsx";
+import {useUserContext} from "../../service/context/UserProvider.jsx";
 
 const StyledCreateProjectForm = styled.form`
     display: flex;
@@ -33,11 +35,26 @@ const StyledTextArea = styled.textarea`
     margin-bottom: 5px;
 `;
 
+const StyledSelectWrapper = styled.article`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 100%;
+`;
+
+const StyledLabel = styled.label`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 5px;
+`;
+
 const CreateProjectPage = () => {
 
     const [projectData, setProjectData] = useState({});
     const [response, setResponse] = useState({});
     const [createProjectRequestStatus, setCreateProjectRequestStatus] = useState(null);
+    const {teams} = useUserContext();
 
     const token = CookieService.getCookie("token");
 
@@ -79,6 +96,11 @@ const CreateProjectPage = () => {
         onClick: createProject
     }
 
+    const selectConfig = {
+        borderRadius: "5px",
+        padding: "5px"
+    }
+
     const renderStatus = (createProjectStatus) => {
         if (createProjectStatus >= 300 && createProjectRequestStatus !== null) {
             return <Notification $status={createProjectStatus}/>
@@ -95,6 +117,16 @@ const CreateProjectPage = () => {
                     <StyledCreateProjectForm>
                         <label>Create your project</label>
                         <Input placeholder={"Project title"} onChange={handleChange("title")}/>
+                        <StyledSelectWrapper>
+                            <StyledLabel>Choose team</StyledLabel>
+                            <Dropdown selectConfig={selectConfig} onChange={handleChange("teamId")}>
+                                <option value={""}>...</option>
+                                { teams.map((team) => (
+                                        <option key={team.teamId} value={team.teamId}>{team.teamName}</option>
+                                    ))
+                                }
+                            </Dropdown>
+                        </StyledSelectWrapper>
                         <StyledTextArea placeholder='Project description' onChange={handleChange("description")} />
                         <Button buttonConfig={createProjectButtonConfig} />
                         {renderStatus(createProjectRequestStatus)}
