@@ -108,7 +108,7 @@ const Profile = () => {
 
     const findUserTeams = () => {
         const teams = userData?.teams;
-        const formattedTeams = teams.map(team => team.teamName).join(', ');
+        const formattedTeams = teams?.map(team => team.teamName).join(', ');
 
         return formattedTeams || "no team";
     }
